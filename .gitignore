@@ -216,3 +216,25 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ---------- Project ----------
+# The Python "lib/" pattern above would otherwise ignore frontend source code
+!frontend/src/lib/
+
+# Django
+backend/staticfiles/
+backend/media/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.env*.local
+.vercel
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
