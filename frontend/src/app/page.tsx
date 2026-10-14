@@ -6,6 +6,13 @@ import { fetchVillages } from "@/lib/api/villages";
 
 const FEATURED_COUNT = 6;
 
+/**
+ * Rendered per request instead of at build time: the build machine (CI, Vercel) cannot reach
+ * the API, and village content should not be frozen into the deployed bundle anyway. The
+ * underlying fetch is still cached, so the backend is hit at most once per revalidate window.
+ */
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const t = await getTranslations();
   const villages = await fetchVillages({ page_size: FEATURED_COUNT });
