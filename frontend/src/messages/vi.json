@@ -1,0 +1,81 @@
+{
+  "site": {
+    "name": "Làng nghề Quảng Trị",
+    "tagline": "Số hóa di sản – Đánh thức tình yêu quê hương",
+    "description": "Hệ sinh thái học tập số về làng nghề truyền thống tỉnh Quảng Trị.",
+    "footer": "Đề tài học tập – Trường Tiểu học và THCS Thiện Thành, xã Diên Sanh, tỉnh Quảng Trị."
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "villages": "Làng nghề",
+    "map": "Bản đồ"
+  },
+  "home": {
+    "heroTitle": "Khám phá làng nghề truyền thống Quảng Trị",
+    "heroLead": "Tìm hiểu lịch sử, con người và câu chuyện của những làng nghề trên quê hương, qua tư liệu do chính học sinh sưu tầm và kể lại.",
+    "exploreVillages": "Xem danh sách làng nghề",
+    "featuredTitle": "Làng nghề tiêu biểu",
+    "featuredEmpty": "Chưa có làng nghề nào được xuất bản."
+  },
+  "villages": {
+    "title": "Làng nghề Quảng Trị",
+    "lead": "Danh sách các làng nghề, nghề truyền thống đã được số hóa.",
+    "count": "{count, plural, =0 {Không có làng nghề nào} one {# làng nghề} other {# làng nghề}}",
+    "empty": "Không tìm thấy làng nghề phù hợp. Thử bỏ bớt điều kiện lọc.",
+    "search": "Tìm kiếm",
+    "searchPlaceholder": "Tên làng, sản phẩm, xã...",
+    "craftType": "Loại nghề",
+    "region": "Khu vực",
+    "all": "Tất cả",
+    "filter": "Lọc",
+    "reset": "Xóa lọc",
+    "previous": "Trang trước",
+    "next": "Trang sau",
+    "notFound": "Không tìm thấy làng nghề này."
+  },
+  "village": {
+    "products": "Sản phẩm chính",
+    "recognition": "Công nhận",
+    "recognitionDecision": "Quyết định",
+    "recognitionYear": "Năm công nhận",
+    "location": "Địa chỉ",
+    "formerLocation": "Địa danh cũ",
+    "coordinates": "Tọa độ",
+    "history": "Lịch sử hình thành",
+    "productionProcess": "Quy trình làm nghề",
+    "currentSituation": "Hiện trạng",
+    "culture": "Văn hóa – lễ hội",
+    "visitorInfo": "Thông tin tham quan",
+    "contact": "Liên hệ",
+    "sources": "Nguồn tham khảo",
+    "updatedAt": "Cập nhật lần cuối"
+  },
+  "craftType": {
+    "conical_hat": "Nón lá",
+    "fish_sauce": "Nước mắm",
+    "mat_weaving": "Dệt chiếu",
+    "bamboo_rattan": "Mây tre đan",
+    "woodwork": "Mộc – chạm khắc",
+    "rice_wine": "Rượu",
+    "noodles_cakes": "Bún – bánh",
+    "metalwork": "Rèn – đúc",
+    "paper_fan": "Quạt giấy",
+    "broom": "Chổi đót",
+    "food_specialty": "Thực phẩm – đặc sản khác",
+    "other": "Khác"
+  },
+  "recognitionStatus": {
+    "traditional_village": "Làng nghề truyền thống",
+    "village": "Làng nghề",
+    "traditional_craft": "Nghề truyền thống",
+    "not_recognized": "Chưa công nhận",
+    "unknown": "Chưa rõ"
+  },
+  "region": {
+    "quang_tri": "Quảng Trị cũ",
+    "quang_binh": "Quảng Bình cũ"
+  },
+  "error": {
+    "loadFailed": "Không tải được dữ liệu. Vui lòng thử lại sau."
+  }
+}

@@ -27,11 +27,13 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
+    "django_filters",
     "drf_spectacular",
 ]
 LOCAL_APPS = [
     "apps.core",
     "apps.accounts",
+    "apps.villages",
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
