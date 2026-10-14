@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
+import { CraftBadge } from "@/components/craft-badge";
 import { fetchVillage, type VillageDetail } from "@/lib/api/villages";
 
 type Params = Promise<{ code: string }>;
@@ -68,8 +69,9 @@ export default async function VillageDetailPage({ params }: { params: Params }) 
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
-      <p className="text-sm text-stone-600">
-        {t(`craftType.${village.craft_type}`)} · {t(`region.${village.former_region}`)}
+      <p className="flex flex-wrap items-center gap-x-3 text-sm text-stone-600">
+        <CraftBadge craftType={village.craft_type} />
+        <span>{t(`region.${village.former_region}`)}</span>
       </p>
       <h1 className="mt-1 text-3xl font-bold text-emerald-900">{village.name}</h1>
       {village.short_description && (

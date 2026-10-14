@@ -1,10 +1,13 @@
+import { SearchX } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { EmptyState } from "@/components/ui/empty-state";
 import { VillageCard } from "@/components/village-card";
 import { VillageFilters } from "@/components/village-filters";
 import { fetchVillages, type VillageQuery } from "@/lib/api/villages";
+import { buildHref } from "@/lib/url";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -18,14 +21,7 @@ function first(value: string | string[] | undefined): string | undefined {
 }
 
 function pageLink(query: VillageQuery, page: number): string {
-  const params = new URLSearchParams();
-  for (const [key, value] of Object.entries({ ...query, page })) {
-    if (value !== undefined && value !== "" && !(key === "page" && value === 1)) {
-      params.set(key, String(value));
-    }
-  }
-  const search = params.toString();
-  return search ? `/villages?${search}` : "/villages";
+  return buildHref("/villages", { ...query, page });
 }
 
 export default async function VillagesPage({ searchParams }: { searchParams: SearchParams }) {
@@ -55,7 +51,18 @@ export default async function VillagesPage({ searchParams }: { searchParams: Sea
       </p>
 
       {villages.results.length === 0 ? (
-        <p className="mt-4 text-stone-600">{t("villages.empty")}</p>
+        <div className="mt-4">
+          <EmptyState
+            icon={SearchX}
+            title={t("villages.empty")}
+            hint={t("villages.emptyHint")}
+            action={
+              <Link href="/villages" className={linkClass}>
+                {t("villages.reset")}
+              </Link>
+            }
+          />
+        </div>
       ) : (
         <ul className="mt-4 grid gap-4 sm:grid-cols-2">
           {villages.results.map((village) => (

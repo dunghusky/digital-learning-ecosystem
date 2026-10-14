@@ -21,13 +21,13 @@
     "title": "Làng nghề Quảng Trị",
     "lead": "Danh sách các làng nghề, nghề truyền thống đã được số hóa.",
     "count": "{count, plural, =0 {Không có làng nghề nào} one {# làng nghề} other {# làng nghề}}",
-    "empty": "Không tìm thấy làng nghề phù hợp. Thử bỏ bớt điều kiện lọc.",
+    "empty": "Không tìm thấy làng nghề phù hợp",
+    "emptyHint": "Thử bỏ bớt điều kiện lọc hoặc tìm bằng từ khóa khác.",
     "search": "Tìm kiếm",
     "searchPlaceholder": "Tên làng, sản phẩm, xã...",
     "craftType": "Loại nghề",
     "region": "Khu vực",
     "all": "Tất cả",
-    "filter": "Lọc",
     "reset": "Xóa lọc",
     "previous": "Trang trước",
     "next": "Trang sau",
@@ -76,6 +76,8 @@
     "quang_binh": "Quảng Bình cũ"
   },
   "error": {
-    "loadFailed": "Không tải được dữ liệu. Vui lòng thử lại sau."
+    "title": "Ối, có lỗi rồi!",
+    "loadFailed": "Không tải được dữ liệu. Vui lòng thử lại sau.",
+    "retry": "Thử lại"
   }
 }
