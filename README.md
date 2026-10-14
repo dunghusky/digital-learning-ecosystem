@@ -175,6 +175,28 @@ When running with Docker (Option 2), `docker-compose.yml` switches the `DATABASE
 | Django admin | http://localhost:8000/admin/ |
 | PostgreSQL | `localhost:5432` – user `postgres`, password `postgres`, database `langnghe` |
 
+## Importing craft village data
+
+Village records are collected in a workbook (`docs/data/craft-villages.xlsx`, kept out of
+version control) and imported by code — re-importing an updated workbook refreshes the existing
+rows instead of duplicating them:
+
+```bash
+cd backend
+uv run python manage.py import_villages ../docs/data/craft-villages.xlsx --dry-run   # report only
+uv run python manage.py import_villages ../docs/data/craft-villages.xlsx
+```
+
+Imported villages start as drafts; publish them in the Django admin (select rows → *Publish
+selected villages*), or pass `--publish` to publish everything the import touches:
+
+```bash
+uv run python manage.py import_villages ../docs/data/craft-villages.xlsx --publish
+```
+
+Without `--publish` the import never changes the editorial status, so re-importing an updated
+workbook cannot unpublish a village an editor has already reviewed.
+
 ## Linting & testing
 
 **Backend** (inside `backend/`):
