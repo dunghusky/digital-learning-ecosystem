@@ -8,10 +8,28 @@ from apps.core.models import PublicationStatus
 from .models import CraftVillage
 
 
+class HasLocationFilter(admin.SimpleListFilter):
+    """Lets editors find the villages that still need coordinates before they reach the map."""
+
+    title = _("on map")
+    parameter_name = "has_location"
+
+    def lookups(self, request: HttpRequest, model_admin: admin.ModelAdmin):
+        return [("yes", _("Has coordinates")), ("no", _("Missing coordinates"))]
+
+    def queryset(self, request: HttpRequest, queryset: QuerySet[CraftVillage]):
+        located = queryset.with_location()
+        if self.value() == "yes":
+            return located
+        if self.value() == "no":
+            return queryset.exclude(pk__in=located.values("pk"))
+        return queryset
+
+
 @admin.register(CraftVillage)
 class CraftVillageAdmin(admin.ModelAdmin):
     list_display = ["name", "craft_type", "commune", "former_region", "status", "has_location"]
-    list_filter = ["status", "craft_type", "former_region", "recognition_status"]
+    list_filter = ["status", HasLocationFilter, "craft_type", "former_region", "recognition_status"]
     search_fields = ["name", "code", "commune", "former_commune", "main_products"]
     prepopulated_fields = {"code": ["name"]}
     readonly_fields = ["created_at", "updated_at", "published_at"]
@@ -26,6 +44,11 @@ class CraftVillageAdmin(admin.ModelAdmin):
         (
             _("Location"),
             {
+                "description": _(
+                    "To get coordinates, right-click the village on Google Maps and click the "
+                    "numbers at the top of the menu to copy them, e.g. 16.712300, 107.245600. "
+                    "The first number is the latitude, the second the longitude."
+                ),
                 "fields": [
                     "former_region",
                     "hamlet",
@@ -34,7 +57,7 @@ class CraftVillageAdmin(admin.ModelAdmin):
                     "former_district",
                     "latitude",
                     "longitude",
-                ]
+                ],
             },
         ),
         (

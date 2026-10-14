@@ -14,7 +14,7 @@ from django.db import transaction
 
 from apps.core.models import PublicationStatus
 
-from .models import CraftType, CraftVillage, FormerRegion, RecognitionStatus
+from .models import CraftType, CraftVillage, FormerRegion, RecognitionStatus, location_errors
 
 SHEET_NAME = "Villages"
 KEY_ROW = 2
@@ -164,6 +164,14 @@ def import_villages(path: Path, *, dry_run: bool = False, publish: bool = False)
                 report.errors.append(f"Row {row_number}: missing name, craft type or region")
                 continue
 
+            latitude = _decimal(raw.get("latitude"), row_number, "latitude", report)
+            longitude = _decimal(raw.get("longitude"), row_number, "longitude", report)
+            if errors := location_errors(latitude, longitude):
+                # Import the village anyway, just off the map, so one bad cell does not
+                # hold back the rest of the row.
+                report.errors.extend(f"Row {row_number}: {msg}" for msg in errors.values())
+                latitude = longitude = None
+
             values = {f: _clean(raw.get(f)) for f in TEXT_FIELDS}
             values.update(
                 craft_type=craft_type,
@@ -177,8 +185,8 @@ def import_villages(path: Path, *, dry_run: bool = False, publish: bool = False)
                 )
                 or RecognitionStatus.UNKNOWN,
                 recognition_year=_year(raw.get("recognition_year"), row_number, report),
-                latitude=_decimal(raw.get("latitude"), row_number, "latitude", report),
-                longitude=_decimal(raw.get("longitude"), row_number, "longitude", report),
+                latitude=latitude,
+                longitude=longitude,
             )
             if publish:
                 # Without --publish the editorial status is left untouched, so re-importing

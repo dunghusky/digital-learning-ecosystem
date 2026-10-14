@@ -170,3 +170,16 @@ def test_import_rejects_a_workbook_without_the_villages_sheet(tmp_path):
 
     with pytest.raises(ValueError, match="no 'Villages' sheet"):
         import_villages(path)
+
+
+def test_import_drops_out_of_province_coordinates_but_keeps_the_village(tmp_path):
+    """Swapped latitude/longitude is the usual typo; the village still imports, off the map."""
+    row = ["tra-loc", "Lang non la Tra Loc", "Nón lá", "Non la", "", "Quảng Trị cũ", "", ""]
+    path = build_workbook(tmp_path / "villages.xlsx", [[*row, 107.2456, 16.7123, ""]])
+
+    report = import_villages(path)
+
+    assert report.created == 1
+    assert "outside Quang Tri" in report.errors[0]
+    village = CraftVillage.objects.get(code="tra-loc")
+    assert village.latitude is None and village.longitude is None
