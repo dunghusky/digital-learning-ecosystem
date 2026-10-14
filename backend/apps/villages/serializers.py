@@ -68,13 +68,13 @@ class CraftVillageFeatureSerializer(serializers.BaseSerializer):
         "short_description",
     ]
 
-    def to_representation(self, village: CraftVillage) -> dict:
+    def to_representation(self, village: CraftVillage) -> dict:  # ty: ignore[invalid-method-override]
         geometry = None
         if village.has_location:
             # GeoJSON orders coordinates as [longitude, latitude], as plain numbers.
             geometry = {
                 "type": "Point",
-                "coordinates": [float(village.longitude), float(village.latitude)],
+                "coordinates": [float(village.longitude), float(village.latitude)],  # ty: ignore[invalid-argument-type]
             }
         return {
             "type": "Feature",

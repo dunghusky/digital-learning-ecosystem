@@ -52,3 +52,28 @@ def test_unpublish_action_moves_villages_back_to_draft(village_admin, request_wi
 
     assert CraftVillage.objects.published().count() == 0
     assert CraftVillage.objects.get(code="tra-loc").status == PublicationStatus.DRAFT
+
+
+def test_change_form_shows_the_location_picker(client, django_user_model):
+    django_user_model.objects.create_superuser("editor", password="pw")
+    client.login(username="editor", password="pw")
+    village = create_village("tra-loc", name="Lang non la Tra Loc", commune="Xa Hai Lang")
+
+    response = client.get(f"/admin/villages/craftvillage/{village.pk}/change/")
+
+    content = response.content.decode()
+    assert response.status_code == 200
+    assert 'class="location-picker"' in content
+    # The search box starts with the village name and commune.
+    assert 'value="Lang non la Tra Loc, Xa Hai Lang"' in content
+    assert "villages/admin/location-picker.js" in content
+
+
+def test_add_form_shows_an_empty_location_picker(client, django_user_model):
+    django_user_model.objects.create_superuser("editor", password="pw")
+    client.login(username="editor", password="pw")
+
+    response = client.get("/admin/villages/craftvillage/add/")
+
+    assert response.status_code == 200
+    assert 'class="location-picker"' in response.content.decode()

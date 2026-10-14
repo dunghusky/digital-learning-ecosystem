@@ -1,0 +1,57 @@
+.location-picker {
+  width: min(100%, 760px);
+}
+
+.location-picker__toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.location-picker__query {
+  flex: 1;
+}
+
+.location-picker__results {
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.location-picker__results li {
+  padding: 0;
+  list-style: none;
+}
+
+.location-picker__results button {
+  display: block;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-bottom: 1px solid var(--hairline-color, #e5e5e5);
+  background: none;
+  color: var(--link-fg, #447e9b);
+  text-align: left;
+  cursor: pointer;
+}
+
+.location-picker__results button:hover {
+  background: var(--darkened-bg, #f5f5f5);
+}
+
+.location-picker__message {
+  padding: 6px 8px;
+  color: var(--body-quiet-color, #666);
+}
+
+.location-picker__map {
+  height: 380px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 4px;
+  cursor: crosshair;
+}
+
+.location-picker__help {
+  margin-top: 6px;
+  color: var(--body-quiet-color, #666);
+}
