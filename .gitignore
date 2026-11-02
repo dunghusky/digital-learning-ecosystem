@@ -242,3 +242,6 @@ Thumbs.db
 
 # Collected craft village data (may contain personal details)
 docs/data/
+
+# Copied from node_modules on install (scripts/copy-maplibre-worker.mjs)
+frontend/public/vendor/

@@ -33,6 +33,22 @@
     "next": "Trang sau",
     "notFound": "Không tìm thấy làng nghề này."
   },
+  "map": {
+    "title": "Bản đồ làng nghề",
+    "lead": "Khám phá các làng nghề trên bản đồ: bấm vào một điểm để xem làng đó làm nghề gì.",
+    "located": "Đã định vị {located}/{total} làng nghề",
+    "viewProfile": "Xem hồ sơ",
+    "terrain3d": "3D",
+    "archipelago": {
+      "paracel": "Quần đảo Hoàng Sa\n(Việt Nam)",
+      "spratly": "Quần đảo Trường Sa\n(Việt Nam)"
+    },
+    "basemap": {
+      "label": "Kiểu bản đồ",
+      "map": "Bản đồ",
+      "satellite": "Vệ tinh"
+    }
+  },
   "village": {
     "products": "Sản phẩm chính",
     "recognition": "Công nhận",

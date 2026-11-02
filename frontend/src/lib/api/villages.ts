@@ -65,6 +65,29 @@ export function fetchVillages(query: VillageQuery = {}): Promise<Paginated<Villa
   return apiFetch<Paginated<VillageSummary>>("/villages/", { params: { ...query } });
 }
 
+/** GeoJSON Feature from `/villages/map/`; `geometry` is null until coordinates are entered. */
+export interface VillageFeature {
+  type: "Feature";
+  /** The village code. */
+  id: string;
+  /** GeoJSON order: [longitude, latitude]. */
+  geometry: { type: "Point"; coordinates: [number, number] } | null;
+  properties: Pick<
+    VillageSummary,
+    "name" | "craft_type" | "former_region" | "commune" | "main_products" | "short_description"
+  >;
+}
+
+export interface VillageFeatureCollection {
+  type: "FeatureCollection";
+  features: VillageFeature[];
+}
+
+/** Every published village in one response, for the map. */
+export function fetchVillageMap(): Promise<VillageFeatureCollection> {
+  return apiFetch<VillageFeatureCollection>("/villages/map/");
+}
+
 /** Returns null when the village does not exist or has not been published yet. */
 export async function fetchVillage(code: string): Promise<VillageDetail | null> {
   try {
