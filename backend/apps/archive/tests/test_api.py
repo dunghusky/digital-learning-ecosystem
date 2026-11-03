@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework.test import APIClient
 
-from apps.archive.models import Genre, GlossaryTerm, Theme
+from apps.archive.models import Genre, GlossaryTerm, GradeLevel, Theme
 from apps.core.models import PublicationStatus
 from apps.villages.tests.factories import create_village
 
@@ -87,6 +87,37 @@ def test_filters_by_genre_village_and_theme(client):
     assert slugs(client.get(reverse("document-list"), {"genre": "riddle"})) == ["riddle"]
     assert slugs(client.get(reverse("document-list"), {"village": "tra-loc"})) == ["riddle"]
     assert slugs(client.get(reverse("document-list"), {"theme": "cau-do"})) == ["riddle"]
+
+
+def test_list_cards_carry_an_excerpt_and_riddle_answers(client):
+    create_document("verse", body="  Line 1\n\nLine 2\nLine 3\nLine 4\nLine 5")
+    create_document("riddle", genre=Genre.RIDDLE, answer="Cai non")
+
+    items = {item["slug"]: item for item in client.get(reverse("document-list")).json()["results"]}
+
+    assert items["verse"]["excerpt"] == ["Line 1", "Line 2", "Line 3", "Line 4"]
+    assert items["riddle"]["answer"] == "Cai non"
+
+
+def test_random_honours_filters_and_skips_drafts(client):
+    create_document("verse")
+    create_document("riddle", genre=Genre.RIDDLE)
+    create_document("draft", genre=Genre.LEGEND, status=PublicationStatus.DRAFT)
+
+    picked = client.get(reverse("document-random"), {"genre": "riddle"})
+
+    assert picked.json() == {"slug": "riddle"}
+    assert client.get(reverse("document-random"), {"genre": "legend"}).status_code == 404
+
+
+def test_grade_filter_includes_documents_for_all_grades(client):
+    create_document("primary", grade_level=GradeLevel.PRIMARY)
+    create_document("secondary", grade_level=GradeLevel.SECONDARY)
+    create_document("shared", grade_level=GradeLevel.ALL)
+
+    found = slugs(client.get(reverse("document-list"), {"grade_level": "primary"}))
+
+    assert sorted(found) == ["primary", "shared"]
 
 
 def test_search_ignores_diacritics(client):

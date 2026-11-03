@@ -25,6 +25,9 @@ export function SiteHeader() {
           <Link href="/map" className="rounded-full px-3 py-2 hover:text-ink">
             {t("nav.map")}
           </Link>
+          <Link href="/archive" className="rounded-full px-3 py-2 hover:text-ink">
+            {t("nav.archive")}
+          </Link>
         </nav>
         <ButtonLink href="/villages" className="hidden text-sm md:inline-flex">
           {t("nav.explore")}

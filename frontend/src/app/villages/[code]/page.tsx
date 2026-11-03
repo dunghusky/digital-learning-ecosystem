@@ -1,11 +1,17 @@
+import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
+import { DocumentCard } from "@/components/archive/document-card";
 import { CraftBadge } from "@/components/craft-badge";
+import { fetchDocuments } from "@/lib/api/documents";
 import { fetchVillage, type VillageDetail } from "@/lib/api/villages";
 
 type Params = Promise<{ code: string }>;
+
+const VILLAGE_DOCUMENTS_SHOWN = 4;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { code } = await params;
@@ -54,7 +60,11 @@ function formatFormerLocation(village: VillageDetail): string {
 
 export default async function VillageDetailPage({ params }: { params: Params }) {
   const { code } = await params;
-  const [t, village] = await Promise.all([getTranslations(), fetchVillage(code)]);
+  const [t, village, documents] = await Promise.all([
+    getTranslations(),
+    fetchVillage(code),
+    fetchDocuments({ village: code }),
+  ]);
 
   if (!village) {
     notFound();
@@ -95,6 +105,30 @@ export default async function VillageDetailPage({ params }: { params: Params }) 
       <Section title={t("village.culture")} text={village.culture} />
       <Section title={t("village.visitorInfo")} text={village.visitor_info} />
       <Section title={t("village.sources")} text={village.sources} />
+
+      {documents.count > 0 && (
+        <section className="mt-14">
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="text-xl font-bold text-ink">{t("village.documents")}</h2>
+            {documents.count > VILLAGE_DOCUMENTS_SHOWN && (
+              <Link
+                href={`/archive?village=${code}`}
+                className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
+              >
+                {t("village.allDocuments", { count: documents.count })}
+                <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            )}
+          </div>
+          <ul className="mt-4 grid gap-6 sm:grid-cols-2">
+            {documents.results.slice(0, VILLAGE_DOCUMENTS_SHOWN).map((document) => (
+              <li key={document.slug}>
+                <DocumentCard document={document} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </main>
   );
 }
