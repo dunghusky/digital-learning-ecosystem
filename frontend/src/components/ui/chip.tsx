@@ -6,14 +6,14 @@ interface ChipProps {
   children: ReactNode;
   active?: boolean;
   icon?: LucideIcon;
-  /** Accent color (hex) used for the icon and the active state; defaults to the brand green. */
+  /** Accent color (hex) used for the icon and the active state; defaults to the brand terracotta. */
   color?: string;
   /** Renders a link when set (server-side filters), otherwise a button (client-side filters). */
   href?: string;
   onClick?: () => void;
 }
 
-const DEFAULT_COLOR = "#047857"; // emerald-700
+const DEFAULT_COLOR = "#e2582b"; // --color-primary
 
 /** Rounded, toggleable filter pill. */
 export function Chip({
@@ -25,9 +25,9 @@ export function Chip({
   onClick,
 }: ChipProps) {
   const className = [
-    "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium",
-    "transition hover:-translate-y-px hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2",
-    active ? "text-white shadow-sm" : "border-stone-300 bg-white text-stone-700",
+    "inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full border px-4 py-1.5 text-sm font-medium",
+    "transition hover:-translate-y-px hover:shadow-card focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2",
+    active ? "text-white shadow-sm" : "border-line bg-surface text-ink hover:border-primary/40",
   ].join(" ");
   const style = active ? { backgroundColor: color, borderColor: color } : undefined;
   const content = (

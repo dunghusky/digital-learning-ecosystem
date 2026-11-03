@@ -8,14 +8,76 @@
   "nav": {
     "home": "Trang chủ",
     "villages": "Làng nghề",
-    "map": "Bản đồ"
+    "map": "Bản đồ",
+    "explore": "Khám phá ngay"
   },
   "home": {
-    "heroTitle": "Khám phá làng nghề truyền thống Quảng Trị",
-    "heroLead": "Tìm hiểu lịch sử, con người và câu chuyện của những làng nghề trên quê hương, qua tư liệu do chính học sinh sưu tầm và kể lại.",
-    "exploreVillages": "Xem danh sách làng nghề",
-    "featuredTitle": "Làng nghề tiêu biểu",
-    "featuredEmpty": "Chưa có làng nghề nào được xuất bản."
+    "badge": "Số hóa di sản – Đánh thức tình yêu quê hương",
+    "heroTitle1": "Khám phá làng nghề",
+    "heroHighlight": "quê hương Quảng Trị.",
+    "heroLead": "Tìm hiểu lịch sử, con người và câu chuyện của những làng nghề truyền thống, qua tư liệu do chính học sinh sưu tầm và kể lại.",
+    "searchLabel": "Tìm làng nghề",
+    "searchSubmit": "Tìm kiếm",
+    "searchExamples": [
+      "Làng làm nón lá ở đâu?",
+      "Nước mắm truyền thống",
+      "Làng mây tre đan",
+      "Bánh bột lọc, bún, bánh tráng…"
+    ],
+    "searchNote": "Miễn phí cho học sinh, thầy cô và mọi người yêu làng nghề.",
+    "tryAsking": "Gợi ý",
+    "featuredEyebrow": "Làng nghề tiêu biểu",
+    "featuredTitle": "Những làng nghề đang chờ em khám phá",
+    "featuredLead": "Mỗi làng là một câu chuyện về đôi bàn tay khéo léo của người Quảng Trị.",
+    "featuredEmpty": "Chưa có làng nghề nào được xuất bản.",
+    "seeAll": "Xem tất cả",
+    "featuresEyebrow": "Học gì ở đây?",
+    "featuresTitle1": "Học qua làng nghề.",
+    "featuresTitle2": "Hiểu thêm quê hương.",
+    "soon": "Sắp có",
+    "features": {
+      "map": {
+        "title": "Bản đồ làng nghề",
+        "text": "Bay qua Quảng Trị trên bản đồ 3D và tìm làng nghề gần nhà em."
+      },
+      "archive": {
+        "title": "Kho tư liệu",
+        "text": "Ca dao, tục ngữ, câu đố và câu chuyện gắn với từng làng nghề."
+      },
+      "lessons": {
+        "title": "Bài học",
+        "text": "Bài học Tiếng Việt – Ngữ văn địa phương lấy chất liệu từ làng nghề."
+      },
+      "quiz": {
+        "title": "Đố vui",
+        "text": "Thử tài hiểu biết, sưu tầm huy hiệu và thi đua cùng các bạn."
+      }
+    },
+    "stepsEyebrow": "Cách học",
+    "stepsTitle": "Khám phá, tìm hiểu, rồi kể lại.",
+    "steps": {
+      "explore": {
+        "title": "Khám phá",
+        "text": "Chọn một làng nghề trên bản đồ hoặc trong danh sách."
+      },
+      "learn": {
+        "title": "Tìm hiểu",
+        "text": "Đọc lịch sử, quy trình làm nghề và tư liệu dân gian."
+      },
+      "share": {
+        "title": "Kể lại",
+        "text": "Viết, chụp ảnh và kể lại câu chuyện làng nghề theo cách của em."
+      }
+    },
+    "photoCredits": "Nguồn ảnh",
+    "photos": {
+      "hienLuong": "Cầu Hiền Lương",
+      "hatArtisan": "Nghệ nhân chằm nón",
+      "cuaTung": "Sông Cửa Tùng",
+      "citadel": "Thành cổ Quảng Trị",
+      "conicalHat": "Nón lá",
+      "phongNha": "Động Phong Nha"
+    }
   },
   "villages": {
     "title": "Làng nghề Quảng Trị",
@@ -47,7 +109,8 @@
       "label": "Kiểu bản đồ",
       "map": "Bản đồ",
       "satellite": "Vệ tinh"
-    }
+    },
+    "eyebrow": "Bản đồ"
   },
   "village": {
     "products": "Sản phẩm chính",

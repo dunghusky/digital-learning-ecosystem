@@ -3,6 +3,7 @@
 import { CloudOff } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { buttonClass } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 
 /**
@@ -13,17 +14,13 @@ export function RouteError({ reset }: { reset: () => void }) {
   const t = useTranslations("error");
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10">
+    <main className="mx-auto max-w-6xl px-4 py-16">
       <EmptyState
         icon={CloudOff}
         title={t("title")}
         hint={t("loadFailed")}
         action={
-          <button
-            type="button"
-            onClick={reset}
-            className="rounded bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
-          >
+          <button type="button" onClick={reset} className={buttonClass("primary", "text-sm")}>
             {t("retry")}
           </button>
         }

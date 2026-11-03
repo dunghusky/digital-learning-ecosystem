@@ -1,5 +1,112 @@
 @import "tailwindcss";
 
+/* Design tokens: see "10a. Định hướng giao diện" in plan.md. Components use these, never raw hex. */
 @theme {
   --font-sans: var(--font-be-vietnam-pro), ui-sans-serif, system-ui, sans-serif;
+
+  --color-bg: #fffbf5;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f7f1e8;
+  --color-ink: #1f1a17;
+  --color-ink-muted: #6b6158;
+  --color-line: #eadfd2;
+  --color-primary: #e2582b;
+  --color-primary-strong: #c2441b;
+  --color-primary-soft: #fbe3d6;
+  --color-secondary: #2f6b4f;
+  --color-secondary-soft: #dcefe4;
+  --color-gold: #d9a441;
+  --color-gold-soft: #fbefd2;
+  --color-indigo: #2e4a7d;
+  --color-indigo-soft: #e4e9f6;
+
+  --radius-card: 1.5rem;
+  --shadow-card: 0 1px 2px rgb(31 26 23 / 0.04), 0 8px 24px -12px rgb(31 26 23 / 0.12);
+  --shadow-card-hover: 0 2px 4px rgb(31 26 23 / 0.05), 0 20px 40px -16px rgb(31 26 23 / 0.22);
+
+  --animate-rise: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-drift: drift 20s ease-in-out infinite alternate;
+  --animate-pop: pop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-marquee: marquee 45s linear infinite;
+  --animate-draw: draw 0.9s 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.6) translateY(24px);
+    }
+  }
+  @keyframes float {
+    50% {
+      transform: translateY(-14px);
+    }
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes drift {
+    to {
+      transform: translate3d(6%, 8%, 0) scale(1.1);
+    }
+  }
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+}
+
+@utility bg-cta {
+  background-image: linear-gradient(135deg, #f07a3a 0%, #e2582b 55%, #f4a04b 100%);
+  background-size: 160% 160%;
+  background-position: 0% 50%;
+  transition:
+    background-position 0.4s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+  &:hover {
+    background-position: 100% 50%;
+  }
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+/* Scroll reveal, toggled by <Reveal>. Without JS the class is never added, so content stays visible. */
+.reveal-pending {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.reveal-done {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal-pending {
+    transform: none;
+  }
 }

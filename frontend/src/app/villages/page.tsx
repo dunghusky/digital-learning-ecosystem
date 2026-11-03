@@ -3,7 +3,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { buttonClass } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Reveal } from "@/components/ui/reveal";
+import { SectionHeading } from "@/components/ui/section-heading";
 import { VillageCard } from "@/components/village-card";
 import { VillageFilters } from "@/components/village-filters";
 import { fetchVillages, type VillageQuery } from "@/lib/api/villages";
@@ -34,19 +37,26 @@ export default async function VillagesPage({ searchParams }: { searchParams: Sea
     former_region: first(params.former_region),
   };
 
-  const villages = await fetchVillages({ ...query, page: page > 1 ? page : undefined });
-  const linkClass = "rounded border border-stone-300 px-3 py-2 text-sm hover:border-emerald-600";
+  const villages = await fetchVillages({
+    ...query,
+    page: page > 1 ? page : undefined,
+  });
+  const linkClass = buttonClass("outline", "text-sm");
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10">
-      <h1 className="text-2xl font-bold">{t("villages.title")}</h1>
-      <p className="mt-1 text-stone-600">{t("villages.lead")}</p>
+    <main className="mx-auto max-w-6xl px-4 py-12">
+      <SectionHeading
+        as="h1"
+        eyebrow={t("nav.villages")}
+        title={t("villages.title")}
+        lead={t("villages.lead")}
+      />
 
-      <div className="mt-6">
+      <div className="mt-8">
         <VillageFilters query={query} />
       </div>
 
-      <p className="mt-6 text-sm text-stone-600">
+      <p className="mt-6 text-sm text-ink-muted">
         {t("villages.count", { count: villages.count })}
       </p>
 
@@ -64,9 +74,11 @@ export default async function VillagesPage({ searchParams }: { searchParams: Sea
           />
         </div>
       ) : (
-        <ul className="mt-4 grid gap-4 sm:grid-cols-2">
-          {villages.results.map((village) => (
-            <VillageCard key={village.code} village={village} />
+        <ul className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {villages.results.map((village, index) => (
+            <Reveal as="li" key={village.code} delay={(index % 3) * 70}>
+              <VillageCard village={village} />
+            </Reveal>
           ))}
         </ul>
       )}

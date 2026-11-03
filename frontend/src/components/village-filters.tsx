@@ -2,6 +2,7 @@ import { Search, X } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+import { buttonClass } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import type { VillageQuery } from "@/lib/api/villages";
 import { CRAFT_META, CRAFT_TYPES, REGIONS } from "@/lib/craft-meta";
@@ -22,7 +23,11 @@ export function VillageFilters({ query }: { query: VillageQuery }) {
 
   return (
     <div className="space-y-4">
-      <form method="get" role="search" className="flex max-w-xl gap-2">
+      <form
+        method="get"
+        role="search"
+        className="flex max-w-xl gap-2 rounded-full border border-line bg-surface p-1.5 shadow-card focus-within:border-primary/60"
+      >
         {/* Keep the active chips when submitting a new search. */}
         {query.craft_type && <input type="hidden" name="craft_type" value={query.craft_type} />}
         {query.former_region && (
@@ -31,7 +36,7 @@ export function VillageFilters({ query }: { query: VillageQuery }) {
         <label className="relative flex-1">
           <span className="sr-only">{t("villages.search")}</span>
           <Search
-            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-stone-400"
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-muted"
             aria-hidden
           />
           <input
@@ -39,13 +44,10 @@ export function VillageFilters({ query }: { query: VillageQuery }) {
             name="search"
             defaultValue={query.search ?? ""}
             placeholder={t("villages.searchPlaceholder")}
-            className="w-full rounded-full border border-stone-300 bg-white py-2 pr-4 pl-9 text-sm focus:border-emerald-600 focus:outline-none"
+            className="w-full bg-transparent py-2 pr-4 pl-9 text-sm text-ink placeholder:text-ink-muted/80 focus:outline-none"
           />
         </label>
-        <button
-          type="submit"
-          className="rounded-full bg-emerald-700 px-5 py-2 text-sm font-medium text-white hover:bg-emerald-800"
-        >
+        <button type="submit" className={buttonClass("primary", "min-h-10 py-2 text-sm")}>
           {t("villages.search")}
         </button>
       </form>
@@ -57,7 +59,9 @@ export function VillageFilters({ query }: { query: VillageQuery }) {
         {CRAFT_TYPES.map((craft) => (
           <Chip
             key={craft}
-            href={hrefWith({ craft_type: query.craft_type === craft ? undefined : craft })}
+            href={hrefWith({
+              craft_type: query.craft_type === craft ? undefined : craft,
+            })}
             active={query.craft_type === craft}
             icon={CRAFT_META[craft].icon}
             color={CRAFT_META[craft].color}
@@ -74,7 +78,9 @@ export function VillageFilters({ query }: { query: VillageQuery }) {
         {REGIONS.map((region) => (
           <Chip
             key={region}
-            href={hrefWith({ former_region: query.former_region === region ? undefined : region })}
+            href={hrefWith({
+              former_region: query.former_region === region ? undefined : region,
+            })}
             active={query.former_region === region}
           >
             {t(`region.${region}`)}
@@ -85,7 +91,7 @@ export function VillageFilters({ query }: { query: VillageQuery }) {
       {hasFilters && (
         <Link
           href={BASE_PATH}
-          className="inline-flex items-center gap-1 text-sm text-stone-600 hover:text-emerald-700"
+          className="inline-flex items-center gap-1 text-sm text-ink-muted hover:text-primary"
         >
           <X className="size-4" aria-hidden />
           {t("villages.reset")}
@@ -99,7 +105,7 @@ export function VillageFilters({ query }: { query: VillageQuery }) {
 function FilterRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div role="group" aria-label={label} className="flex items-center gap-3">
-      <span className="hidden w-20 shrink-0 text-sm text-stone-500 sm:block">{label}</span>
+      <span className="hidden w-20 shrink-0 text-sm text-ink-muted sm:block">{label}</span>
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
         {children}
       </div>
