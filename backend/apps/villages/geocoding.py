@@ -164,9 +164,18 @@ def candidate_queries(village: CraftVillage) -> list[tuple[str, Precision]]:
     return queries
 
 
+# The bounding box also covers Hue and a corner of Ha Tinh, where many place names repeat
+# (Kim Long, Gia Hoi...), so a result must also name the province in its address.
+PROVINCE_NAME = "Quảng Trị"
+
+
+def in_province(place: Place) -> bool:
+    return PROVINCE_NAME in place.label and not location_errors(place.latitude, place.longitude)
+
+
 def suggest_location(village: CraftVillage, geocoder: Geocoder) -> Suggestion | None:
     for query, precision in candidate_queries(village):
         for place in geocoder.search(query):
-            if not location_errors(place.latitude, place.longitude):
+            if in_province(place):
                 return Suggestion(place=place, precision=precision, query=query)
     return None
