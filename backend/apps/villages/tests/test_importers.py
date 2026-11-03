@@ -183,3 +183,32 @@ def test_import_drops_out_of_province_coordinates_but_keeps_the_village(tmp_path
     assert "outside Quang Tri" in report.errors[0]
     village = CraftVillage.objects.get(code="tra-loc")
     assert village.latitude is None and village.longitude is None
+
+
+def test_blank_coordinates_keep_the_existing_location(tmp_path):
+    from .factories import create_village
+
+    create_village("tra-loc", latitude="16.712300", longitude="107.245600")
+    path = build_workbook(
+        tmp_path / "villages.xlsx",
+        [
+            [
+                "tra-loc",
+                "Lang non la Tra Loc",
+                "Nón lá",
+                "Non la",
+                "",
+                "Quảng Trị cũ",
+                "",
+                "",
+                None,
+                None,
+                "",
+            ]
+        ],
+    )
+
+    import_villages(path)
+
+    village = CraftVillage.objects.get(code="tra-loc")
+    assert (str(village.latitude), str(village.longitude)) == ("16.712300", "107.245600")

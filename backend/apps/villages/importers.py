@@ -151,9 +151,11 @@ def import_villages(path: Path, *, dry_run: bool = False, publish: bool = False)
                 )
                 or RecognitionStatus.UNKNOWN,
                 recognition_year=_year(raw.get("recognition_year"), row_number, report),
-                latitude=latitude,
-                longitude=longitude,
             )
+            if latitude is not None:
+                # Blank coordinate cells keep what the database has: coordinates are usually
+                # placed later with the admin map picker or geocode_villages, not in the sheet.
+                values.update(latitude=latitude, longitude=longitude)
             if publish:
                 # Without --publish the editorial status is left untouched, so re-importing
                 # never unpublishes a village an editor already reviewed.

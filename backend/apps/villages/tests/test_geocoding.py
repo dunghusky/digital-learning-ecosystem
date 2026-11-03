@@ -21,8 +21,14 @@ from .factories import create_village
 
 pytestmark = pytest.mark.django_db
 
-TRA_LOC = Place(Decimal("16.712345678"), Decimal("107.245678901"), "Trà Lộc, Hải Lăng", "village")
-HAI_LANG = Place(Decimal("16.70"), Decimal("107.25"), "Xã Hải Lăng", "municipality")
+TRA_LOC = Place(
+    Decimal("16.712345678"),
+    Decimal("107.245678901"),
+    "Trà Lộc, Hải Lăng, Tỉnh Quảng Trị",
+    "village",
+)
+HAI_LANG = Place(Decimal("16.70"), Decimal("107.25"), "Xã Hải Lăng, Tỉnh Quảng Trị", "municipality")
+HUE = Place(Decimal("16.46"), Decimal("107.55"), "Phường Kim Long, Thành phố Huế", "suburb")
 OUTSIDE = Place(Decimal("21.03"), Decimal("105.85"), "Hà Nội", "city")
 
 
@@ -80,6 +86,13 @@ def test_suggestion_ignores_results_outside_the_province():
 
     assert suggestion.place == HAI_LANG
     assert suggestion.precision == Precision.COMMUNE
+
+
+def test_suggestion_ignores_namesakes_in_hue_inside_the_bounding_box():
+    village = create_village(name="Làng nón lá Trà Lộc", commune="Xã Hải Lăng")
+    geocoder = FakeGeocoder({"Trà Lộc": [HUE], "Xã Hải Lăng": [HAI_LANG]})
+
+    assert suggest_location(village, geocoder).place == HAI_LANG
 
 
 def test_nominatim_waits_between_requests(monkeypatch):
