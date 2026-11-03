@@ -11,8 +11,13 @@ from rest_framework.response import Response
 from apps.core.filters import AccentInsensitiveSearchFilter
 from apps.villages.models import CraftVillage
 
-from .models import Document, Genre
-from .serializers import DocumentDetailSerializer, DocumentListSerializer, GenreCountSerializer
+from .models import Document, Genre, GradeLevel
+from .serializers import (
+    DocumentDetailSerializer,
+    DocumentListSerializer,
+    DocumentSlugSerializer,
+    GenreCountSerializer,
+)
 
 RELATED_LIMIT = 4
 
@@ -28,10 +33,18 @@ def with_links(queryset: QuerySet[Document]) -> QuerySet[Document]:
 class DocumentFilter(django_filters.FilterSet):
     village = django_filters.CharFilter(field_name="villages__code", label="Village code")
     theme = django_filters.CharFilter(field_name="themes__slug", label="Theme slug")
+    grade_level = django_filters.ChoiceFilter(
+        choices=GradeLevel.choices,
+        method="filter_grade_level",
+        label="Grade level (documents for all grades are always included)",
+    )
 
     class Meta:
         model = Document
         fields = ["genre", "grade_level", "village", "theme"]
+
+    def filter_grade_level(self, queryset, name, value):
+        return queryset.filter(grade_level__in=[value, GradeLevel.ALL])
 
 
 def related_documents(document: Document) -> QuerySet[Document]:
@@ -103,6 +116,21 @@ class DocumentViewSet(viewsets.ReadOnlyModelViewSet):
         document = candidates[timezone.localdate().toordinal() % count]
         context = self.get_serializer_context() | {"related": related_documents(document)}
         return Response(DocumentDetailSerializer(document, context=context).data)
+
+    @extend_schema(
+        summary="A random document",
+        description=(
+            "Slug of one published document picked at random, honouring the same filters and "
+            "search as the list, for the archive's 'surprise me' button."
+        ),
+        responses=DocumentSlugSerializer,
+    )
+    @action(detail=False, pagination_class=None)
+    def random(self, request: Request) -> Response:
+        document = self.filter_queryset(self.get_queryset()).order_by("?").first()
+        if document is None:
+            return Response({"detail": "No published document."}, status=404)
+        return Response(DocumentSlugSerializer(document).data)
 
     @extend_schema(
         summary="Number of published documents per genre",

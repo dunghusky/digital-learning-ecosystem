@@ -25,15 +25,35 @@ class GlossaryTermSerializer(serializers.ModelSerializer):
         fields = ["term", "explanation"]
 
 
+EXCERPT_LINES = 4
+
+
 class DocumentListSerializer(serializers.ModelSerializer):
     """Card-sized payload: enough to render a list without the full text."""
 
     villages = VillageRefSerializer(many=True, read_only=True)
     themes = ThemeSerializer(many=True, read_only=True)
+    excerpt = serializers.SerializerMethodField(
+        help_text=f"The first {EXCERPT_LINES} non-blank lines of the body, for verse cards."
+    )
 
     class Meta:
         model = Document
-        fields = ["slug", "title", "genre", "grade_level", "summary", "villages", "themes"]
+        fields = [
+            "slug",
+            "title",
+            "genre",
+            "grade_level",
+            "summary",
+            "excerpt",
+            "answer",
+            "villages",
+            "themes",
+        ]
+
+    def get_excerpt(self, document: Document) -> list[str]:
+        lines = (line.strip() for line in document.body.splitlines())
+        return [line for line in lines if line][:EXCERPT_LINES]
 
 
 class DocumentDetailSerializer(DocumentListSerializer):
@@ -45,7 +65,6 @@ class DocumentDetailSerializer(DocumentListSerializer):
         fields = [
             *DocumentListSerializer.Meta.fields,
             "body",
-            "answer",
             "reading_questions",
             "glossary",
             "author",
@@ -63,6 +82,12 @@ class DocumentDetailSerializer(DocumentListSerializer):
 
     def get_related(self, document: Document) -> list[dict]:
         return DocumentListSerializer(self.context.get("related", []), many=True).data
+
+
+class DocumentSlugSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Document
+        fields = ["slug"]
 
 
 class GenreCountSerializer(serializers.Serializer):

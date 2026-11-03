@@ -3,6 +3,7 @@
 /* Design tokens: see "10a. Định hướng giao diện" in plan.md. Components use these, never raw hex. */
 @theme {
   --font-sans: var(--font-be-vietnam-pro), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-noto-serif), ui-serif, Georgia, serif;
 
   --color-bg: #fffbf5;
   --color-surface: #ffffff;

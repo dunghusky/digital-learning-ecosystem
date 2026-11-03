@@ -9,6 +9,7 @@
     "home": "Trang chủ",
     "villages": "Làng nghề",
     "map": "Bản đồ",
+    "archive": "Kho tư liệu",
     "explore": "Khám phá ngay"
   },
   "home": {
@@ -127,7 +128,9 @@
     "visitorInfo": "Thông tin tham quan",
     "contact": "Liên hệ",
     "sources": "Nguồn tham khảo",
-    "updatedAt": "Cập nhật lần cuối"
+    "updatedAt": "Cập nhật lần cuối",
+    "documents": "Tư liệu về làng nghề",
+    "allDocuments": "Xem cả {count} tư liệu"
   },
   "craftType": {
     "conical_hat": "Nón lá",
@@ -153,6 +156,76 @@
   "region": {
     "quang_tri": "Quảng Trị cũ",
     "quang_binh": "Quảng Bình cũ"
+  },
+  "archive": {
+    "eyebrow": "Kho tư liệu",
+    "title": "Kho tư liệu làng nghề",
+    "lead": "Ca dao, hò, câu đố, truyền thuyết và những câu chuyện gắn với làng nghề Quảng Trị.",
+    "count": "{count, plural, =0 {Không có tư liệu nào} other {# tư liệu}}",
+    "allGenres": "Tất cả",
+    "gradeLevel": "Cấp học",
+    "village": "Làng nghề",
+    "allVillages": "Mọi làng nghề",
+    "search": "Tìm kiếm",
+    "searchPlaceholder": "Tên bài, câu chữ, làng nghề...",
+    "reset": "Xóa lọc",
+    "empty": "Không tìm thấy tư liệu phù hợp",
+    "emptyHint": "Thử chọn thể loại khác hoặc tìm bằng từ khóa khác.",
+    "random": "Ngẫu nhiên",
+    "readMore": "Đọc tiếp",
+    "showAnswer": "Xem đáp án",
+    "hideAnswer": "Lật lại",
+    "answer": "Đáp án",
+    "notFound": "Không tìm thấy tư liệu này.",
+    "glossary": "Từ ngữ",
+    "readingQuestions": "Tìm hiểu văn bản",
+    "fontSmaller": "Thu nhỏ chữ",
+    "fontLarger": "Phóng to chữ",
+    "listen": "Nghe đọc",
+    "stopListening": "Dừng đọc",
+    "share": "Chia sẻ",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép",
+    "sourceAndLicense": "Nguồn & giấy phép",
+    "author": "Tác giả",
+    "collector": "Người sưu tầm",
+    "source": "Nguồn",
+    "viewSource": "Xem nguồn gốc",
+    "relatedVillages": "Làng nghề liên quan",
+    "related": "Tư liệu liên quan",
+    "previous": "Trang trước",
+    "next": "Trang sau"
+  },
+  "genre": {
+    "folk_verse": "Ca dao",
+    "proverb": "Tục ngữ",
+    "work_song": "Hò lao động",
+    "narrative_verse": "Vè",
+    "nursery_rhyme": "Đồng dao",
+    "riddle": "Câu đố",
+    "legend": "Truyền thuyết",
+    "folk_tale": "Truyện dân gian",
+    "poem": "Thơ",
+    "essay": "Bạn có biết",
+    "reportage": "Phóng sự",
+    "interview": "Lời nghệ nhân"
+  },
+  "gradeLevel": {
+    "primary": "Tiểu học",
+    "secondary": "THCS",
+    "all": "Mọi cấp học"
+  },
+  "license": {
+    "folk_attributed": "Văn học dân gian, có dẫn nguồn",
+    "own_work": "Do thầy cô, học sinh của trường biên soạn",
+    "permission_granted": "Sử dụng với sự đồng ý của tác giả",
+    "cc_by": "Creative Commons Ghi công (CC BY)",
+    "unknown": "Chưa rõ"
+  },
+  "notFound": {
+    "title": "Không tìm thấy trang này",
+    "hint": "Có thể đường dẫn đã thay đổi hoặc nội dung chưa được xuất bản.",
+    "home": "Về trang chủ"
   },
   "error": {
     "title": "Ối, có lỗi rồi!",
