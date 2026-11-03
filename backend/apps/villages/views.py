@@ -7,6 +7,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from apps.core.filters import AccentInsensitiveSearchFilter
+
 from .models import CraftVillage
 from .serializers import (
     CraftVillageDetailSerializer,
@@ -23,7 +25,11 @@ class CraftVillageViewSet(viewsets.ReadOnlyModelViewSet):
 
     permission_classes = [AllowAny]
     lookup_field = "code"
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        AccentInsensitiveSearchFilter,
+        filters.OrderingFilter,
+    ]
     filterset_fields = ["craft_type", "former_region", "recognition_status"]
     search_fields = ["name", "main_products", "commune", "former_commune", "short_description"]
     ordering_fields = ["name", "published_at"]

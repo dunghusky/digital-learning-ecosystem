@@ -116,3 +116,12 @@ def test_map_accepts_list_filters(client):
     response = client.get(reverse("village-map"), {"craft_type": CraftType.FISH_SAUCE.value})
 
     assert [f["id"] for f in response.json()["features"]] == ["canh-duong"]
+
+
+def test_search_ignores_diacritics(client):
+    create_village("my-thuy", name="Làng nước mắm Mỹ Thủy")
+    create_village("tra-loc", name="Làng nón lá Trà Lộc")
+
+    response = client.get(reverse("village-list"), {"search": "nuoc mam"})
+
+    assert [village["code"] for village in response.json()["results"]] == ["my-thuy"]

@@ -22,6 +22,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.postgres",
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",
@@ -34,6 +35,7 @@ LOCAL_APPS = [
     "apps.core",
     "apps.accounts",
     "apps.villages",
+    "apps.archive",
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -70,6 +72,9 @@ TEMPLATES = [
 
 DATABASES = {"default": env.db("DATABASE_URL")}
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Admin URL fields assume https:// when the scheme is omitted (Django 6.0 default).
+FORMS_URLFIELD_ASSUME_HTTPS = True
 
 AUTH_USER_MODEL = "accounts.User"
 AUTH_PASSWORD_VALIDATORS = [

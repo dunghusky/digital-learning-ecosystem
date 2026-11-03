@@ -29,7 +29,7 @@ def test_publish_action_publishes_drafts(village_admin, request_with_messages):
     create_village("tra-loc", status=PublicationStatus.DRAFT)
     create_village("my-thuy", status=PublicationStatus.PENDING)
 
-    village_admin.publish_villages(request_with_messages, CraftVillage.objects.all())
+    village_admin.publish_selected(request_with_messages, CraftVillage.objects.all())
 
     assert CraftVillage.objects.published().count() == 2
     assert all(v.published_at is not None for v in CraftVillage.objects.all())
@@ -39,7 +39,7 @@ def test_publish_action_keeps_the_original_publication_date(village_admin, reque
     village = create_village("tra-loc")
     first_published_at = village.published_at
 
-    village_admin.publish_villages(request_with_messages, CraftVillage.objects.all())
+    village_admin.publish_selected(request_with_messages, CraftVillage.objects.all())
 
     village.refresh_from_db()
     assert village.published_at == first_published_at
@@ -48,7 +48,7 @@ def test_publish_action_keeps_the_original_publication_date(village_admin, reque
 def test_unpublish_action_moves_villages_back_to_draft(village_admin, request_with_messages):
     create_village("tra-loc")
 
-    village_admin.unpublish_villages(request_with_messages, CraftVillage.objects.all())
+    village_admin.unpublish_selected(request_with_messages, CraftVillage.objects.all())
 
     assert CraftVillage.objects.published().count() == 0
     assert CraftVillage.objects.get(code="tra-loc").status == PublicationStatus.DRAFT

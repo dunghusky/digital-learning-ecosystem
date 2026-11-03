@@ -4,7 +4,7 @@ from django.http import HttpRequest
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-from apps.core.models import PublicationStatus
+from apps.core.admin import PublishableAdminMixin
 
 from .models import CraftVillage
 
@@ -31,14 +31,13 @@ class HasLocationFilter(admin.SimpleListFilter):
 
 
 @admin.register(CraftVillage)
-class CraftVillageAdmin(admin.ModelAdmin):
+class CraftVillageAdmin(PublishableAdminMixin, admin.ModelAdmin):
     list_display = ["name", "craft_type", "commune", "former_region", "status", "has_location"]
     list_filter = ["status", HasLocationFilter, "craft_type", "former_region", "recognition_status"]
     search_fields = ["name", "code", "commune", "former_commune", "main_products"]
     prepopulated_fields = {"code": ["name"]}
     readonly_fields = ["location_picker", "created_at", "updated_at", "published_at"]
     list_per_page = 50
-    actions = ["publish_villages", "unpublish_villages"]
     fieldsets = [
         (None, {"fields": ["code", "name", "craft_type", "main_products", "short_description"]}),
         (
@@ -130,24 +129,3 @@ class CraftVillageAdmin(admin.ModelAdmin):
     @admin.display(boolean=True, description=_("on map"))
     def has_location(self, obj: CraftVillage) -> bool:
         return obj.has_location
-
-    def _set_status(self, queryset: QuerySet[CraftVillage], status: str) -> int:
-        """Save row by row so published_at is stamped on first publication."""
-        changed = 0
-        for village in queryset.exclude(status=status):
-            village.status = status
-            village.save(update_fields=["status", "published_at", "updated_at"])
-            changed += 1
-        return changed
-
-    @admin.action(description=_("Publish selected villages"))
-    def publish_villages(self, request: HttpRequest, queryset: QuerySet[CraftVillage]) -> None:
-        changed = self._set_status(queryset, PublicationStatus.PUBLISHED)
-        self.message_user(request, _("Published %(count)d village(s).") % {"count": changed})
-
-    @admin.action(description=_("Move selected villages back to draft"))
-    def unpublish_villages(self, request: HttpRequest, queryset: QuerySet[CraftVillage]) -> None:
-        changed = self._set_status(queryset, PublicationStatus.DRAFT)
-        self.message_user(
-            request, _("Moved %(count)d village(s) back to draft.") % {"count": changed}
-        )

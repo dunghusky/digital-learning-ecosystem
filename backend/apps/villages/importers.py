@@ -5,20 +5,19 @@ here, and the data starts on row 3. Villages are matched by ``code``, so re-impo
 updated workbook refreshes the existing rows instead of duplicating them.
 """
 
-from dataclasses import dataclass, field
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
 from django.db import transaction
 
+from apps.core.importing import ImportReport, clean_text, read_sheet
 from apps.core.models import PublicationStatus
 
 from .models import CraftType, CraftVillage, FormerRegion, RecognitionStatus, location_errors
 
 SHEET_NAME = "Villages"
 KEY_ROW = 2
-FIRST_DATA_ROW = 3
 
 # The workbook is filled in Vietnamese; map those labels onto the stored choice values.
 CRAFT_TYPE_BY_LABEL = {
@@ -75,30 +74,12 @@ TEXT_FIELDS = [
 REQUIRED_FIELDS = ["code", "name", "craft_type", "former_region"]
 
 
-@dataclass
-class ImportReport:
-    created: int = 0
-    updated: int = 0
-    skipped: int = 0
-    errors: list[str] = field(default_factory=list)
-
-    def summary(self) -> str:
-        return (
-            f"created={self.created} updated={self.updated} "
-            f"skipped={self.skipped} errors={len(self.errors)}"
-        )
-
-
-def _clean(value: Any) -> str:
-    return str(value).strip() if value is not None else ""
-
-
 def _choice(value: Any, mapping: dict[str, Any], row: int, column: str, report: ImportReport):
-    label = _clean(value).lower()
+    label = clean_text(value).lower()
     if not label:
         return None
     if label not in mapping:
-        report.errors.append(f"Row {row}: unknown {column} '{_clean(value)}'")
+        report.errors.append(f"Row {row}: unknown {column} '{clean_text(value)}'")
         return None
     return mapping[label]
 
@@ -124,29 +105,14 @@ def _year(value: Any, row: int, report: ImportReport) -> int | None:
 
 
 def import_villages(path: Path, *, dry_run: bool = False, publish: bool = False) -> ImportReport:
-    from openpyxl import load_workbook  # imported lazily: only needed for imports
-
     report = ImportReport()
-    workbook = load_workbook(path, data_only=True, read_only=True)
-    if SHEET_NAME not in workbook.sheetnames:
-        raise ValueError(f"Workbook has no '{SHEET_NAME}' sheet")
-    sheet = workbook[SHEET_NAME]
-
-    keys = [_clean(cell.value) for cell in sheet[KEY_ROW]]
-    missing = [f for f in REQUIRED_FIELDS if f not in keys and FIELD_ALIASES.get(f, f) not in keys]
-    if missing:
-        raise ValueError(f"Workbook is missing required columns: {', '.join(missing)}")
+    rows = read_sheet(
+        path, SHEET_NAME, key_row=KEY_ROW, required=REQUIRED_FIELDS, aliases=FIELD_ALIASES
+    )
 
     with transaction.atomic():
-        for row_number, row in enumerate(
-            sheet.iter_rows(min_row=FIRST_DATA_ROW, values_only=True), start=FIRST_DATA_ROW
-        ):
-            raw = {
-                FIELD_ALIASES.get(key, key): value
-                for key, value in zip(keys, row, strict=False)
-                if key
-            }
-            code = _clean(raw.get("code"))
+        for row_number, raw in rows:
+            code = clean_text(raw.get("code"))
             if not code:
                 continue
 
@@ -156,7 +122,7 @@ def import_villages(path: Path, *, dry_run: bool = False, publish: bool = False)
             region = _choice(
                 raw.get("former_region"), REGION_BY_LABEL, row_number, "former_region", report
             )
-            name = _clean(raw.get("name"))
+            name = clean_text(raw.get("name"))
             if not (name and craft_type and region):
                 report.skipped += 1
                 if name and (craft_type is None or region is None):
@@ -172,7 +138,7 @@ def import_villages(path: Path, *, dry_run: bool = False, publish: bool = False)
                 report.errors.extend(f"Row {row_number}: {msg}" for msg in errors.values())
                 latitude = longitude = None
 
-            values = {f: _clean(raw.get(f)) for f in TEXT_FIELDS}
+            values = {f: clean_text(raw.get(f)) for f in TEXT_FIELDS}
             values.update(
                 craft_type=craft_type,
                 former_region=region,
@@ -202,5 +168,4 @@ def import_villages(path: Path, *, dry_run: bool = False, publish: bool = False)
         if dry_run:
             transaction.set_rollback(True)
 
-    workbook.close()
     return report
