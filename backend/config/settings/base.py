@@ -114,3 +114,9 @@ SPECTACULAR_SETTINGS = {
 }
 
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
+
+# Nominatim (OpenStreetMap geocoding) requires an identifying User-Agent, ideally with contact
+# details: https://operations.osmfoundation.org/policies/nominatim/
+GEOCODER_USER_AGENT = env(
+    "GEOCODER_USER_AGENT", default="langnghe-quang-tri/0.1 (school project geocoding)"
+)

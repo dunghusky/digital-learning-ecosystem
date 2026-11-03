@@ -1,9 +1,18 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 from rest_framework import filters, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
+from rest_framework.response import Response
 
 from .models import CraftVillage
-from .serializers import CraftVillageDetailSerializer, CraftVillageListSerializer
+from .serializers import (
+    CraftVillageDetailSerializer,
+    CraftVillageFeatureSerializer,
+    CraftVillageListSerializer,
+)
 
 
 class CraftVillageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -26,3 +35,17 @@ class CraftVillageViewSet(viewsets.ReadOnlyModelViewSet):
         if self.action == "retrieve":
             return CraftVillageDetailSerializer
         return CraftVillageListSerializer
+
+    @extend_schema(
+        summary="Villages as a GeoJSON FeatureCollection",
+        description=(
+            "Every published village in one unpaginated response, for the map. Villages "
+            "without coordinates have `geometry: null`. Accepts the same filters as the list."
+        ),
+        responses=OpenApiTypes.OBJECT,
+    )
+    @action(detail=False, url_path="map", url_name="map", pagination_class=None)
+    def map_features(self, request: Request) -> Response:
+        villages = self.filter_queryset(self.get_queryset())
+        features = CraftVillageFeatureSerializer(villages, many=True).data
+        return Response({"type": "FeatureCollection", "features": features})

@@ -50,3 +50,35 @@ class CraftVillageDetailSerializer(serializers.ModelSerializer):
             "published_at",
             "updated_at",
         ]
+
+
+class CraftVillageFeatureSerializer(serializers.BaseSerializer):
+    """One village as a GeoJSON Feature for the map.
+
+    Villages without coordinates are kept with ``geometry: null`` (valid GeoJSON) so the map
+    can still list them as "not yet located" from the same response.
+    """
+
+    PROPERTY_FIELDS = [
+        "name",
+        "craft_type",
+        "former_region",
+        "commune",
+        "main_products",
+        "short_description",
+    ]
+
+    def to_representation(self, village: CraftVillage) -> dict:  # ty: ignore[invalid-method-override]
+        geometry = None
+        if village.has_location:
+            # GeoJSON orders coordinates as [longitude, latitude], as plain numbers.
+            geometry = {
+                "type": "Point",
+                "coordinates": [float(village.longitude), float(village.latitude)],  # ty: ignore[invalid-argument-type]
+            }
+        return {
+            "type": "Feature",
+            "id": village.code,
+            "geometry": geometry,
+            "properties": {field: getattr(village, field) for field in self.PROPERTY_FIELDS},
+        }

@@ -10,7 +10,7 @@ import "./globals.css";
 
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ["vietnamese", "latin"],
-  weight: ["400", "500", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-be-vietnam-pro",
 });
 
@@ -27,7 +27,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
   return (
     <html lang={locale} className={beVietnamPro.variable}>
-      <body className="flex min-h-screen flex-col bg-stone-50 font-sans text-stone-900 antialiased">
+      <body className="flex min-h-screen flex-col bg-bg font-sans text-ink antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <SiteHeader />
           <div className="flex-1">{children}</div>
