@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+import { AccountMenu } from "@/components/auth/account-menu";
 import { ButtonLink } from "@/components/ui/button";
 
 export function SiteHeader() {
@@ -29,9 +30,15 @@ export function SiteHeader() {
             {t("nav.archive")}
           </Link>
         </nav>
-        <ButtonLink href="/villages" className="hidden text-sm md:inline-flex">
-          {t("nav.explore")}
-        </ButtonLink>
+        <div className="flex items-center gap-2">
+          <AccountMenu />
+          {/* Hidden on a wrapper: "hidden" on the link itself loses to buttonClass's inline-flex. */}
+          <span className="hidden md:contents">
+            <ButtonLink href="/villages" className="text-sm">
+              {t("nav.explore")}
+            </ButtonLink>
+          </span>
+        </div>
       </div>
     </header>
   );

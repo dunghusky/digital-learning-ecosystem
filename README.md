@@ -17,6 +17,7 @@ Piloted at Thien Thanh Primary & Secondary School, Dien Sanh commune, Quang Tri 
 - [Environment variables](#environment-variables)
 - [Local URLs](#local-urls)
 - [Public API](#public-api)
+- [Accounts API](#accounts-api)
 - [Importing craft village data](#importing-craft-village-data)
 - [Importing archive documents](#importing-archive-documents)
 - [Linting & testing](#linting--testing)
@@ -160,6 +161,7 @@ docker compose exec backend python manage.py createsuperuser   # first time only
 | `DJANGO_ALLOWED_HOSTS` | Host names the backend may serve | `localhost,127.0.0.1` |
 | `DATABASE_URL` | PostgreSQL connection string | `postgres://postgres:postgres@localhost:5432/langnghe` |
 | `CORS_ALLOWED_ORIGINS` | Frontend origins allowed to call the API | `http://localhost:3000` |
+| `AUTH_THROTTLE_RATE` | Max sign-up / login / token-refresh / password-change requests per client (optional) | `20/min` |
 
 When running with Docker (Option 2), `docker-compose.yml` switches the `DATABASE_URL` host to `db`; no `.env` change is needed.
 
@@ -196,6 +198,25 @@ interactive reference is at `/api/docs/`.
 | `GET /documents/featured/?genre=` | A document that changes once a day (the home page's "folk verse of the day") |
 | `GET /documents/random/` | The slug of a random document matching the list filters |
 | `GET /documents/genres/` | Number of published documents per genre |
+
+## Accounts API
+
+Students sign themselves up; there is no e-mail verification in the pilot. Base URL:
+`/api/v1/auth`. Authenticated calls send `Authorization: Bearer <access>`.
+
+| Endpoint | Description |
+|---|---|
+| `POST /register/` | Create a student account: `username`, `password`, `school_name`, `class_name` (required), `phone`, `email` (optional). Returns the profile, **not** tokens: the student then logs in |
+| `POST /token/` | Log in with `username` + `password`; returns `access` (30 min) and `refresh` (7 days) |
+| `POST /token/refresh/` | New `access` **and** `refresh`; the old refresh token is revoked (rotation) |
+| `POST /logout/` | Revoke a `refresh` token |
+| `GET /me/` · `PATCH /me/` | Read or edit your profile (`school_name`, `class_name`, `phone`, `email`, names); `username` and `role` are read-only |
+| `POST /password/change/` | `current_password` + `new_password` (Django's password validators apply) |
+
+Sign-up, login, refresh and password change are rate limited (`AUTH_THROTTLE_RATE`). On the
+frontend the session lives in `localStorage` behind `src/lib/auth/session.ts`; components read
+it through `useAuth()` / `useCurrentUser()`, and `authSend()` refreshes an expired access
+token once before retrying.
 
 ## Importing craft village data
 
