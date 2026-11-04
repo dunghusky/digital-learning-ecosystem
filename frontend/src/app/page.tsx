@@ -4,6 +4,8 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { CraftMarquee } from "@/components/home/craft-marquee";
+import { DailyVerse } from "@/components/home/daily-verse";
+import { ExploreTiles } from "@/components/home/explore-tiles";
 import { HeroBackdrop } from "@/components/home/hero-backdrop";
 import { HeroSearch } from "@/components/home/hero-search";
 import { PhotoCredits } from "@/components/home/photo-credits";
@@ -11,6 +13,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { VillageCard } from "@/components/village-card";
+import { fetchFeaturedDocument, fetchGenreCounts } from "@/lib/api/documents";
 import { fetchVillages } from "@/lib/api/villages";
 import type { CraftType } from "@/lib/api/villages";
 import { CRAFT_META } from "@/lib/craft-meta";
@@ -38,6 +41,7 @@ const FEATURES: {
     icon: BookOpen,
     tint: "bg-indigo-soft",
     accent: "bg-indigo",
+    href: "/archive",
   },
   {
     key: "lessons",
@@ -59,13 +63,38 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const t = await getTranslations();
-  const villages = await fetchVillages({ page_size: FEATURED_COUNT });
+  const [villages, dailyVerse, genreCounts] = await Promise.all([
+    fetchVillages({ page_size: FEATURED_COUNT }),
+    // The home page must not fail because of the archive: without it, the tiles stand alone.
+    fetchFeaturedDocument("folk_verse").catch(() => null),
+    fetchGenreCounts().catch(() => []),
+  ]);
+  const documentCount = genreCounts.reduce((total, genre) => total + genre.count, 0);
 
   return (
     <main>
       <Hero t={t} />
       <CraftMarquee />
       <PhotoCredits />
+
+      <section className="mx-auto max-w-6xl px-4 pt-20">
+        <Reveal>
+          <SectionHeading
+            eyebrow={t("home.daily.sectionEyebrow")}
+            title={t("home.daily.sectionTitle")}
+          />
+        </Reveal>
+        <div className={`mt-10 grid gap-5 ${dailyVerse ? "lg:grid-cols-[3fr_2fr]" : ""}`}>
+          {dailyVerse && (
+            <Reveal className="h-full">
+              <DailyVerse document={dailyVerse} />
+            </Reveal>
+          )}
+          <Reveal delay={80} className="h-full">
+            <ExploreTiles stats={{ villages: villages.count, documents: documentCount }} />
+          </Reveal>
+        </div>
+      </section>
 
       <section className="mx-auto max-w-6xl px-4 py-20">
         <Reveal>

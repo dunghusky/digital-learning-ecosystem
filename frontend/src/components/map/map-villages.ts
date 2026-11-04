@@ -6,6 +6,9 @@ export interface MapVillage {
   name: string;
   craftType: CraftType;
   commune: string;
+  shortDescription: string;
+  /** Published archive documents about the village. */
+  documentCount: number;
   latitude: number;
   longitude: number;
 }
@@ -23,6 +26,8 @@ export function locatedVillages(features: VillageFeature[]): MapVillage[] {
         name: feature.properties.name,
         craftType: feature.properties.craft_type,
         commune: feature.properties.commune,
+        shortDescription: feature.properties.short_description,
+        documentCount: feature.properties.document_count,
         latitude,
         longitude,
       },

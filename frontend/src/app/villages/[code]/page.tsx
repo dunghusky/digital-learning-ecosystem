@@ -6,12 +6,16 @@ import { getTranslations } from "next-intl/server";
 
 import { DocumentCard } from "@/components/archive/document-card";
 import { CraftBadge } from "@/components/craft-badge";
+import { HorizontalScroller } from "@/components/ui/horizontal-scroller";
+import { MiniMap } from "@/components/map/mini-map";
+import { toMiniMapPlaces } from "@/components/map/mini-map-places";
 import { fetchDocuments } from "@/lib/api/documents";
 import { fetchVillage, type VillageDetail } from "@/lib/api/villages";
 
 type Params = Promise<{ code: string }>;
 
-const VILLAGE_DOCUMENTS_SHOWN = 4;
+/** Cards in the sideways row; a final card links to the rest in the archive. */
+const VILLAGE_DOCUMENTS_SHOWN = 8;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { code } = await params;
@@ -99,6 +103,8 @@ export default async function VillageDetailPage({ params }: { params: Params }) 
         <Fact label={t("village.contact")} value={village.contact} />
       </dl>
 
+      <MiniMap places={toMiniMapPlaces([village])} className="mt-8" />
+
       <Section title={t("village.history")} text={village.history} />
       <Section title={t("village.productionProcess")} text={village.production_process} />
       <Section title={t("village.currentSituation")} text={village.current_situation} />
@@ -109,24 +115,44 @@ export default async function VillageDetailPage({ params }: { params: Params }) 
       {documents.count > 0 && (
         <section className="mt-14">
           <div className="flex items-end justify-between gap-4">
-            <h2 className="text-xl font-bold text-ink">{t("village.documents")}</h2>
-            {documents.count > VILLAGE_DOCUMENTS_SHOWN && (
-              <Link
-                href={`/archive?village=${code}`}
-                className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
-              >
-                {t("village.allDocuments", { count: documents.count })}
-                <ArrowRight className="size-4" aria-hidden />
-              </Link>
-            )}
+            <div>
+              <h2 className="text-xl font-bold text-ink">{t("village.documents")}</h2>
+              <p className="mt-1 text-sm text-ink-muted">
+                {t("village.documentsLead", { count: documents.count })}
+              </p>
+            </div>
+            <Link
+              href={`/archive?village=${code}`}
+              className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
+            >
+              {t("village.allDocuments", { count: documents.count })}
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
           </div>
-          <ul className="mt-4 grid gap-6 sm:grid-cols-2">
-            {documents.results.slice(0, VILLAGE_DOCUMENTS_SHOWN).map((document) => (
-              <li key={document.slug}>
-                <DocumentCard document={document} />
-              </li>
-            ))}
-          </ul>
+          <div className="mt-4">
+            <HorizontalScroller
+              label={t("village.documents")}
+              previousLabel={t("village.scrollPrevious")}
+              nextLabel={t("village.scrollNext")}
+            >
+              {documents.results.slice(0, VILLAGE_DOCUMENTS_SHOWN).map((document) => (
+                <li key={document.slug} className="w-[min(18rem,80vw)] shrink-0">
+                  <DocumentCard document={document} />
+                </li>
+              ))}
+              {documents.count > VILLAGE_DOCUMENTS_SHOWN && (
+                <li className="w-48 shrink-0">
+                  <Link
+                    href={`/archive?village=${code}`}
+                    className="flex h-full min-h-40 flex-col items-center justify-center gap-2 rounded-card border border-dashed border-line p-5 text-center text-sm font-semibold text-primary transition hover:border-primary/40 hover:bg-surface"
+                  >
+                    <ArrowRight className="size-6" aria-hidden />
+                    {t("village.allDocuments", { count: documents.count })}
+                  </Link>
+                </li>
+              )}
+            </HorizontalScroller>
+          </div>
         </section>
       )}
     </main>

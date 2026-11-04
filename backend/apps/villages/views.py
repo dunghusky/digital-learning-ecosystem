@@ -1,3 +1,4 @@
+from django.db.models import Count, Q
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
@@ -8,6 +9,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from apps.core.filters import AccentInsensitiveSearchFilter
+from apps.core.models import PublicationStatus
 
 from .models import CraftVillage
 from .serializers import (
@@ -46,12 +48,17 @@ class CraftVillageViewSet(viewsets.ReadOnlyModelViewSet):
         summary="Villages as a GeoJSON FeatureCollection",
         description=(
             "Every published village in one unpaginated response, for the map. Villages "
-            "without coordinates have `geometry: null`. Accepts the same filters as the list."
+            "without coordinates have `geometry: null`; `properties.document_count` counts the "
+            "published archive documents about the village. Accepts the same filters as the list."
         ),
         responses=OpenApiTypes.OBJECT,
     )
     @action(detail=False, url_path="map", url_name="map", pagination_class=None)
     def map_features(self, request: Request) -> Response:
-        villages = self.filter_queryset(self.get_queryset())
+        # Only published documents count: the map links the number to the public archive.
+        published_documents = Q(documents__status=PublicationStatus.PUBLISHED)
+        villages = self.filter_queryset(self.get_queryset()).annotate(
+            document_count=Count("documents", filter=published_documents, distinct=True)
+        )
         features = CraftVillageFeatureSerializer(villages, many=True).data
         return Response({"type": "FeatureCollection", "features": features})

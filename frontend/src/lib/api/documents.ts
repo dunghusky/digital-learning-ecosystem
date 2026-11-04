@@ -21,6 +21,12 @@ export type License = "folk_attributed" | "own_work" | "permission_granted" | "c
 
 export type VillageRef = Pick<VillageSummary, "code" | "name" | "craft_type">;
 
+/** Village reference on the document detail, with coordinates for the mini map. */
+export interface LocatedVillageRef extends VillageRef {
+  latitude: number | null;
+  longitude: number | null;
+}
+
 export interface Theme {
   slug: string;
   name: string;
@@ -46,6 +52,7 @@ export interface DocumentSummary {
 }
 
 export interface DocumentDetail extends DocumentSummary {
+  villages: LocatedVillageRef[];
   body: string;
   reading_questions: string[];
   glossary: GlossaryTerm[];

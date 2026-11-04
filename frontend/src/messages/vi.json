@@ -78,6 +78,22 @@
       "citadel": "Thành cổ Quảng Trị",
       "conicalHat": "Nón lá",
       "phongNha": "Động Phong Nha"
+    },
+    "daily": {
+      "eyebrow": "Ca dao hôm nay",
+      "read": "Đọc trọn bài",
+      "sectionEyebrow": "Mỗi ngày một bài",
+      "sectionTitle": "Đọc một câu ca dao, rồi đi khám phá làng nghề"
+    },
+    "explore": {
+      "map": {
+        "title": "Khám phá bản đồ",
+        "text": "Bay qua Quảng Trị trên bản đồ 3D, tìm {count} làng nghề truyền thống."
+      },
+      "archive": {
+        "title": "Vào kho tư liệu",
+        "text": "{count} bài ca dao, câu đố, truyện kể về làng nghề."
+      }
     }
   },
   "villages": {
@@ -98,9 +114,8 @@
   },
   "map": {
     "title": "Bản đồ làng nghề",
-    "lead": "Khám phá các làng nghề trên bản đồ: bấm vào một điểm để xem làng đó làm nghề gì.",
+    "lead": "Khám phá các làng nghề trên bản đồ: bấm vào một điểm để xem làng đó làm nghề gì và đọc tư liệu về làng.",
     "located": "Đã định vị {located}/{total} làng nghề",
-    "viewProfile": "Xem hồ sơ",
     "terrain3d": "3D",
     "archipelago": {
       "paracel": "Quần đảo Hoàng Sa\n(Việt Nam)",
@@ -111,7 +126,15 @@
       "map": "Bản đồ",
       "satellite": "Vệ tinh"
     },
-    "eyebrow": "Bản đồ"
+    "eyebrow": "Bản đồ",
+    "mini": {
+      "label": "Bản đồ vị trí: {names}",
+      "openFull": "Xem trên bản đồ lớn"
+    },
+    "popup": {
+      "viewProfile": "Xem hồ sơ",
+      "documents": "{count} tư liệu"
+    }
   },
   "village": {
     "products": "Sản phẩm chính",
@@ -129,8 +152,11 @@
     "contact": "Liên hệ",
     "sources": "Nguồn tham khảo",
     "updatedAt": "Cập nhật lần cuối",
-    "documents": "Tư liệu về làng nghề",
-    "allDocuments": "Xem cả {count} tư liệu"
+    "documents": "Ca dao, truyền thuyết về làng",
+    "allDocuments": "Xem cả {count} tư liệu",
+    "documentsLead": "{count} tư liệu: thơ ca, câu đố, truyện kể gắn với làng nghề.",
+    "scrollPrevious": "Xem các tư liệu trước",
+    "scrollNext": "Xem các tư liệu tiếp theo"
   },
   "craftType": {
     "conical_hat": "Nón lá",

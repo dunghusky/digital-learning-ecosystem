@@ -13,6 +13,13 @@ const MaplibreMap = dynamic(() => import("./maplibre-map"), {
   loading: () => <Skeleton className="h-full w-full rounded-none" />,
 });
 
-export function VillageMap({ villages }: { villages: MapVillage[] }) {
-  return <MaplibreMap villages={villages} />;
+/** `initialCode` comes from `/map?village=…`: the map opens on that village with its card shown. */
+export function VillageMap({
+  villages,
+  initialCode,
+}: {
+  villages: MapVillage[];
+  initialCode?: string;
+}) {
+  return <MaplibreMap villages={villages} initialCode={initialCode} />;
 }
