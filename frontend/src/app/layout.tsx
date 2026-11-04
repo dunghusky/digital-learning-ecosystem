@@ -5,6 +5,7 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { AuthProvider } from "@/lib/auth/auth-provider";
 
 import "./globals.css";
 
@@ -42,9 +43,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang={locale} className={`${beVietnamPro.variable} ${notoSerif.variable}`}>
       <body className="flex min-h-screen flex-col bg-bg font-sans text-ink antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <SiteHeader />
-          <div className="flex-1">{children}</div>
-          <SiteFooter />
+          <AuthProvider>
+            <SiteHeader />
+            <div className="flex-1">{children}</div>
+            <SiteFooter />
+          </AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

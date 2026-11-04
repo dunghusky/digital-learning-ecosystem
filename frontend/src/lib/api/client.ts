@@ -12,6 +12,8 @@ export class ApiError extends Error {
   constructor(
     readonly status: number,
     message: string,
+    /** Parsed JSON error body, e.g. DRF field errors `{ username: ["..."] }`. */
+    readonly body: unknown = null,
   ) {
     super(message);
     this.name = "ApiError";
@@ -50,4 +52,35 @@ export async function apiFetch<T>(
     throw new ApiError(response.status, `API ${path} failed with status ${response.status}`);
   }
   return response.json() as Promise<T>;
+}
+
+/**
+ * Sends JSON to the API from the browser (forms, auth). Never cached. Throws ApiError with
+ * the parsed error body so forms can show field errors; status 0 means the network failed.
+ */
+export async function apiSend<T>(
+  path: string,
+  { method = "POST", body, token }: { method?: string; body?: unknown; token?: string } = {},
+): Promise<T> {
+  let response: Response;
+  try {
+    response = await fetch(buildUrl(path), {
+      method,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: body === undefined ? undefined : JSON.stringify(body),
+      cache: "no-store",
+    });
+  } catch {
+    throw new ApiError(0, `API ${path} is unreachable`);
+  }
+
+  const payload: unknown = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new ApiError(response.status, `API ${path} failed with status ${response.status}`, payload);
+  }
+  return payload as T;
 }
