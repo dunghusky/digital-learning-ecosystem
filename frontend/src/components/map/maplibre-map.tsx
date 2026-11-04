@@ -3,18 +3,16 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import { Map as MapIcon, Mountain, Satellite } from "lucide-react";
-import {
-  type ExpressionSpecification,
-  getVersion,
-  setWorkerUrl,
-  type StyleSpecification,
-} from "maplibre-gl";
+import "./maplibre-setup";
+
+import type { ExpressionSpecification, StyleSpecification } from "maplibre-gl";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Layer,
   type LayerProps,
   Map as MapGL,
+  type MapLayerMouseEvent,
   type MapRef,
   NavigationControl,
   Source,
@@ -39,14 +37,14 @@ import {
 } from "./map-config";
 import { loadBasemapStyle } from "./map-style";
 import type { MapVillage } from "./map-villages";
-
-// Served from public/ (copied by scripts/copy-maplibre-worker.mjs): MapLibre cannot find its
-// worker next to the bundled library. The version busts the browser cache after upgrades.
-setWorkerUrl(`/vendor/maplibre-gl-worker.mjs?v=${getVersion()}`);
+import { VillagePopup } from "./village-popup";
 
 /** Never zoom in further than this when fitting the villages (one village would fill the screen). */
 const FIT_MAX_ZOOM = 11;
+/** Zoom when flying to one village (from a click or from `/map?village=…`). */
+const VILLAGE_ZOOM = 13;
 const FLAT = { pitch: 0, bearing: 0 };
+const VILLAGE_DOTS_ID = "village-dots";
 
 const CRAFT_COLOR: ExpressionSpecification = [
   "match",
@@ -57,7 +55,7 @@ const CRAFT_COLOR: ExpressionSpecification = [
 
 // Temporary village dots; step 1.4d replaces them with animated markers and clusters.
 const villageDots: LayerProps = {
-  id: "village-dots",
+  id: VILLAGE_DOTS_ID,
   type: "circle",
   paint: {
     "circle-color": CRAFT_COLOR,
@@ -66,6 +64,30 @@ const villageDots: LayerProps = {
     "circle-stroke-width": 2,
   },
 };
+
+/** Ring drawn around the selected village (none when `code` is null). */
+const selectedRing = (code: string | null): LayerProps => ({
+  id: "village-selected",
+  type: "circle",
+  filter: ["==", ["get", "code"], code ?? ""],
+  paint: {
+    "circle-color": "rgba(0,0,0,0)",
+    "circle-radius": ["interpolate", ["linear"], ["zoom"], 6, 10, 12, 15],
+    "circle-stroke-color": CRAFT_COLOR,
+    "circle-stroke-width": 3,
+  },
+});
+
+/** Keeps `?village=` in the address bar in step with the card, without a navigation. */
+function syncVillageParam(code: string | null) {
+  const url = new URL(window.location.href);
+  if (code) {
+    url.searchParams.set("village", code);
+  } else {
+    url.searchParams.delete("village");
+  }
+  window.history.replaceState(window.history.state, "", url);
+}
 
 const villageNames: LayerProps = {
   id: "village-names",
@@ -111,12 +133,24 @@ function boundsOf(villages: MapVillage[]): Bounds | null {
  * 3D map of the villages. Opens on a globe view of Vietnam, then flies down to the villages.
  * Loaded only in the browser (see `VillageMap`): MapLibre needs WebGL and `window`.
  */
-export default function MaplibreMap({ villages }: { villages: MapVillage[] }) {
+export default function MaplibreMap({
+  villages,
+  initialCode,
+}: {
+  villages: MapVillage[];
+  initialCode?: string;
+}) {
   const t = useTranslations("map");
   const mapRef = useRef<MapRef>(null);
   const [basemapId, setBasemapId] = useState<BasemapId>("map");
   const [mapStyle, setMapStyle] = useState<StyleSpecification | null>(null);
   const [is3d, setIs3d] = useState(true);
+  // An unknown or not-yet-located code is ignored: the map simply opens on every village.
+  const [selectedCode, setSelectedCode] = useState<string | null>(
+    () => villages.find((village) => village.code === initialCode)?.code ?? null,
+  );
+  const [hovering, setHovering] = useState(false);
+  const selected = villages.find((village) => village.code === selectedCode) ?? null;
 
   useEffect(() => {
     let cancelled = false;
@@ -153,19 +187,50 @@ export default function MaplibreMap({ villages }: { villages: MapVillage[] }) {
     [t],
   );
 
-  /** Opening shot: from the whole country down to the villages (or the province). */
+  const tilt = is3d ? TILT_3D : FLAT;
+
+  /** Opening shot: from the whole country down to the chosen village, or to all of them. */
   const flyToVillages = useCallback(() => {
     const map = mapRef.current;
-    const camera = map?.cameraForBounds(boundsOf(villages) ?? PROVINCE_BOUNDS, {
-      padding: 60,
-      maxZoom: FIT_MAX_ZOOM,
-    });
-    if (!map || !camera) {
+    if (!map) {
       return;
     }
     // Not `essential`: MapLibre turns it into a jump for visitors who prefer reduced motion.
-    map.flyTo({ ...camera, ...(is3d ? TILT_3D : FLAT), duration: INTRO_DURATION_MS, curve: 1.6 });
+    const flight = { ...(is3d ? TILT_3D : FLAT), duration: INTRO_DURATION_MS, curve: 1.6 };
+    if (selected) {
+      map.flyTo({ center: [selected.longitude, selected.latitude], zoom: VILLAGE_ZOOM, ...flight });
+      return;
+    }
+    const camera = map.cameraForBounds(boundsOf(villages) ?? PROVINCE_BOUNDS, {
+      padding: 60,
+      maxZoom: FIT_MAX_ZOOM,
+    });
+    if (camera) {
+      map.flyTo({ ...camera, ...flight });
+    }
+    // Only the opening shot uses this; later selections must not re-run it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [villages, is3d]);
+
+  const selectVillage = (village: MapVillage | null) => {
+    setSelectedCode(village?.code ?? null);
+    syncVillageParam(village?.code ?? null);
+    if (village) {
+      const zoom = Math.max(mapRef.current?.getZoom() ?? 0, FIT_MAX_ZOOM);
+      mapRef.current?.flyTo({
+        center: [village.longitude, village.latitude],
+        zoom,
+        ...tilt,
+        duration: 1200,
+      });
+    }
+  };
+
+  const handleClick = (event: MapLayerMouseEvent) => {
+    const code = event.features?.[0]?.properties?.code;
+    // A click on empty map closes the card; a click on a dot opens that village.
+    selectVillage(villages.find((village) => village.code === code) ?? null);
+  };
 
   const toggle3d = () => {
     const next = !is3d;
@@ -194,6 +259,11 @@ export default function MaplibreMap({ villages }: { villages: MapVillage[] }) {
         maxZoom={MAX_ZOOM}
         maxPitch={70}
         onLoad={flyToVillages}
+        interactiveLayerIds={[VILLAGE_DOTS_ID]}
+        onClick={handleClick}
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+        cursor={hovering ? "pointer" : "grab"}
         style={{ width: "100%", height: "100%" }}
       >
         <NavigationControl position="bottom-right" visualizePitch />
@@ -202,8 +272,10 @@ export default function MaplibreMap({ villages }: { villages: MapVillage[] }) {
         </Source>
         <Source id="villages" type="geojson" data={villageData}>
           <Layer {...villageDots} />
+          <Layer {...selectedRing(selectedCode)} />
           <Layer {...villageNames} />
         </Source>
+        {selected && <VillagePopup village={selected} onClose={() => selectVillage(null)} />}
       </MapGL>
 
       <div className="absolute top-3 right-3 flex flex-col items-end gap-2">

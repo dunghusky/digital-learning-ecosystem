@@ -24,12 +24,13 @@ export function VillageLine({ document }: { document: DocumentSummary }) {
   if (document.villages.length === 0) {
     return null;
   }
+  const names = document.villages.map((village) => village.name).join(", ");
+  // `min-w-0` lets the line shrink inside the card footer's flex row (flex items default to
+  // their content width), so a long list wraps instead of pushing "Read more" out of the card.
   return (
-    <p className="flex items-center gap-1 text-sm text-ink-muted">
-      <MapPin className="size-3.5 shrink-0" aria-hidden />
-      <span className="truncate">
-        {document.villages.map((village) => village.name).join(", ")}
-      </span>
+    <p className="flex min-w-0 items-start gap-1 text-sm text-ink-muted" title={names}>
+      <MapPin className="mt-0.5 size-3.5 shrink-0" aria-hidden />
+      <span className="line-clamp-2">{names}</span>
     </p>
   );
 }

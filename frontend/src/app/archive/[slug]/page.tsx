@@ -8,6 +8,8 @@ import { DocumentActions } from "@/components/archive/document-actions";
 import { DocumentCard } from "@/components/archive/document-card";
 import { GenreLabel } from "@/components/archive/document-parts";
 import { Reader } from "@/components/archive/reader";
+import { MiniMap } from "@/components/map/mini-map";
+import { toMiniMapPlaces } from "@/components/map/mini-map-places";
 import { CRAFT_META } from "@/lib/craft-meta";
 import { type DocumentDetail, fetchDocument } from "@/lib/api/documents";
 
@@ -129,6 +131,7 @@ export default async function DocumentPage({ params }: { params: Params }) {
               </li>
             ))}
           </ul>
+          <MiniMap places={toMiniMapPlaces(document.villages)} className="mt-5" />
         </section>
       )}
 

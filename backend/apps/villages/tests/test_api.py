@@ -125,3 +125,30 @@ def test_search_ignores_diacritics(client):
     response = client.get(reverse("village-list"), {"search": "nuoc mam"})
 
     assert [village["code"] for village in response.json()["results"]] == ["my-thuy"]
+
+
+def test_map_counts_only_published_documents(client):
+    from apps.archive.tests.factories import create_document
+
+    village = create_village("tra-loc")
+    create_village("kim-long")
+    create_document("published-one").villages.add(village)
+    create_document("published-two").villages.add(village)
+    create_document("draft", status=PublicationStatus.DRAFT).villages.add(village)
+
+    features = client.get(reverse("village-map")).json()["features"]
+
+    counts = {f["id"]: f["properties"]["document_count"] for f in features}
+    assert counts == {"tra-loc": 2, "kim-long": 0}
+
+
+def test_map_document_count_is_not_inflated_by_search(client):
+    """Search joins other tables; the count must still be one per document."""
+    from apps.archive.tests.factories import create_document
+
+    village = create_village("tra-loc", name="Lang non la Tra Loc")
+    create_document("one").villages.add(village)
+
+    [feature] = client.get(reverse("village-map"), {"search": "non"}).json()["features"]
+
+    assert feature["properties"]["document_count"] == 1

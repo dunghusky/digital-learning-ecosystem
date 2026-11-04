@@ -14,7 +14,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("title"), description: t("lead") };
 }
 
-export default async function MapPage() {
+type SearchParams = Promise<{ village?: string | string[] }>;
+
+export default async function MapPage({ searchParams }: { searchParams: SearchParams }) {
+  const { village } = await searchParams;
   const [t, collection] = await Promise.all([getTranslations("map"), fetchVillageMap()]);
   const villages = locatedVillages(collection.features);
 
@@ -29,7 +32,10 @@ export default async function MapPage() {
       </p>
 
       <div className="mt-4 h-[calc(100dvh-16rem)] min-h-[420px] overflow-hidden rounded-card border border-line shadow-card">
-        <VillageMap villages={villages} />
+        <VillageMap
+          villages={villages}
+          initialCode={typeof village === "string" ? village : undefined}
+        />
       </div>
     </main>
   );

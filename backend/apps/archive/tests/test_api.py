@@ -51,7 +51,13 @@ def test_detail_includes_glossary_questions_and_links(client):
     payload = client.get(reverse("document-detail", kwargs={"slug": document.slug})).json()
 
     assert payload["villages"] == [
-        {"code": "bo-lieu", "name": "Lang non la Bo Lieu", "craft_type": "conical_hat"}
+        {
+            "code": "bo-lieu",
+            "name": "Lang non la Bo Lieu",
+            "craft_type": "conical_hat",
+            "latitude": None,
+            "longitude": None,
+        }
     ]
     assert payload["glossary"] == [{"term": "ma", "explanation": "me"}]
     assert payload["reading_questions"] == ["Cau 1?", "Cau 2?"]
@@ -173,3 +179,26 @@ def test_unpublished_villages_are_not_listed(client):
 
     assert [v["code"] for v in listed] == ["tra-loc"]
     assert [v["code"] for v in detail["villages"]] == ["tra-loc"]
+
+
+def test_detail_villages_carry_coordinates_for_the_mini_map(client):
+    located = create_village("tra-loc", latitude="16.712300", longitude="107.245600")
+    unlocated = create_village("my-thuy")
+    create_document("ai-ve").villages.add(located, unlocated)
+
+    response = client.get(reverse("document-detail", kwargs={"slug": "ai-ve"}))
+
+    villages = {v["code"]: v for v in response.json()["villages"]}
+    assert villages["tra-loc"]["latitude"] == 16.7123
+    assert villages["tra-loc"]["longitude"] == 107.2456
+    assert villages["my-thuy"]["latitude"] is None
+
+
+def test_list_villages_stay_compact(client):
+    create_document("ai-ve").villages.add(
+        create_village("tra-loc", latitude="16.7", longitude="107.2")
+    )
+
+    [document] = client.get(reverse("document-list")).json()["results"]
+
+    assert "latitude" not in document["villages"][0]

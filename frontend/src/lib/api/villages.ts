@@ -75,7 +75,10 @@ export interface VillageFeature {
   properties: Pick<
     VillageSummary,
     "name" | "craft_type" | "former_region" | "commune" | "main_products" | "short_description"
-  >;
+  > & {
+    /** Published archive documents about the village. */
+    document_count: number;
+  };
 }
 
 export interface VillageFeatureCollection {

@@ -13,6 +13,19 @@ class VillageRefSerializer(serializers.ModelSerializer):
         fields = ["code", "name", "craft_type"]
 
 
+class LocatedVillageRefSerializer(VillageRefSerializer):
+    """Village reference plus coordinates, so the reader can draw its mini map.
+
+    Coordinates are plain numbers (or ``null`` while the village is not yet located).
+    """
+
+    latitude = serializers.FloatField(read_only=True, allow_null=True)
+    longitude = serializers.FloatField(read_only=True, allow_null=True)
+
+    class Meta(VillageRefSerializer.Meta):
+        fields = [*VillageRefSerializer.Meta.fields, "latitude", "longitude"]
+
+
 class ThemeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Theme
@@ -57,6 +70,7 @@ class DocumentListSerializer(serializers.ModelSerializer):
 
 
 class DocumentDetailSerializer(DocumentListSerializer):
+    villages = LocatedVillageRefSerializer(many=True, read_only=True)
     glossary = GlossaryTermSerializer(many=True, read_only=True)
     reading_questions = serializers.SerializerMethodField()
     related = serializers.SerializerMethodField()

@@ -80,5 +80,9 @@ class CraftVillageFeatureSerializer(serializers.BaseSerializer):
             "type": "Feature",
             "id": village.code,
             "geometry": geometry,
-            "properties": {field: getattr(village, field) for field in self.PROPERTY_FIELDS},
+            "properties": {
+                **{field: getattr(village, field) for field in self.PROPERTY_FIELDS},
+                # Annotated by the map view; 0 when the serializer is used on a plain queryset.
+                "document_count": getattr(village, "document_count", 0),
+            },
         }
