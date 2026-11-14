@@ -19,6 +19,7 @@ Piloted at Thien Thanh Primary & Secondary School, Dien Sanh commune, Quang Tri 
 - [Public API](#public-api)
 - [Accounts API](#accounts-api)
 - [Lessons & classwork API](#lessons--classwork-api)
+- [Quizzes API](#quizzes-api)
 - [Importing craft village data](#importing-craft-village-data)
 - [Importing archive documents](#importing-archive-documents)
 - [Linting & testing](#linting--testing)
@@ -54,7 +55,8 @@ digital-learning-ecosystem/
 │   │   ├── accounts/           #   users, authentication (JWT)
 │   │   ├── villages/           #   craft villages, GeoJSON for the map
 │   │   ├── archive/            #   folk verse, riddles, stories (the digital archive)
-│   │   └── lessons/            #   lessons, assignments, submissions and feedback
+│   │   ├── lessons/            #   lessons, assignments, submissions and feedback
+│   │   └── quizzes/            #   graded quizzes built from the archive, attempts, class results
 │   ├── manage.py
 │   ├── requirements.txt        # production dependencies
 │   ├── requirements-dev.txt    # + development tools (pytest, ruff)
@@ -63,7 +65,7 @@ digital-learning-ecosystem/
 │   └── .env.example            # environment variable template
 ├── frontend/                   # Web UI (Next.js)
 │   ├── src/
-│   │   ├── app/                # pages & layouts (App Router): /villages, /map, /archive, /lessons, ...
+│   │   ├── app/                # pages & layouts (App Router): /villages, /map, /archive, /lessons, /quizzes, ...
 │   │   ├── components/         # UI, map (MapLibre), archive, lesson and classwork components
 │   │   └── lib/                # shared utilities (API client, ...)
 │   ├── package.json
@@ -164,6 +166,7 @@ docker compose exec backend python manage.py createsuperuser   # first time only
 | `DATABASE_URL` | PostgreSQL connection string | `postgres://postgres:postgres@localhost:5432/langnghe` |
 | `CORS_ALLOWED_ORIGINS` | Frontend origins allowed to call the API | `http://localhost:3000` |
 | `AUTH_THROTTLE_RATE` | Max sign-up / login / token-refresh / password-change requests per client (optional) | `20/min` |
+| `QUIZ_THROTTLE_RATE` | Max quiz submissions per client (optional) | `30/min` |
 
 When running with Docker (Option 2), `docker-compose.yml` switches the `DATABASE_URL` host to `db`; no `.env` change is needed.
 
@@ -203,7 +206,8 @@ interactive reference is at `/api/docs/`.
 | `GET /lessons/` | Paginated lessons. Filters: `subject` (`vietnamese` grades 1–5, `literature` grades 6–9), `grade`, `village` (code), `document` (slug), `search`, `ordering` |
 | `GET /lessons/{slug}/` | One lesson: objectives, introduction, expected output, its documents in reading order (full text + glossary) and its tasks |
 
-Document and village details also list the published `lessons` that use them.
+Document and village details also list the published `lessons` that use them. Lesson,
+document and village details list the published `quizzes` about them.
 
 ## Accounts API
 
@@ -248,6 +252,32 @@ see the assignment. All endpoints below need a signed-in user of the right role.
 Teachers only see their own assignments; school admins see all. On the frontend, students work
 on `/lessons/{slug}` (drafts save automatically) and follow their work on `/my-work`; teachers
 use `/teaching`.
+
+## Quizzes API
+
+Teachers write quizzes in the Django admin (**Quizzes → Quizzes**). A question is one of five
+kinds: multiple choice, guess from a picture (multiple choice with an `image_url`), fill in the
+blank (`___` in the prompt), riddle, and matching pairs. Two shortcuts build questions from the
+archive: on a question, pick its source document and leave the prompt empty (a riddle copies
+the riddle and its answer; fill in the blank hides the *word to hide*), and on a quiz,
+**Add riddles** turns ticked published riddles into questions. A quiz can only be published once
+every question is complete; the quiz page lists what is missing.
+
+Grading happens on the server, so answers never reach the browser before the student submits.
+Typed answers ignore case, extra spaces and edge punctuation, but **not** Vietnamese accents
+(`non` ≠ `nón`); list other accepted spellings one per line. A matching question scores only
+when every pair is right, but the result says which pairs were.
+
+| Endpoint | Who | Description |
+|---|---|---|
+| `GET /quizzes/` | Anyone | Paginated published quizzes. Filters: `grade_level`, `village` (code), `lesson` (slug), `search`, `ordering` |
+| `GET /quizzes/{slug}/` | Anyone | The questions without answers; matching right-hand items are shuffled text |
+| `POST /quizzes/{slug}/submit/` | Anyone | `{"answers": [{"question": id, "choice": id \| "text": "..." \| "matches": {"<pair id>": "<right text>"}}], "duration_seconds": n}`. Returns the score, solutions and explanations. A signed-in **student**'s attempt is saved; guests and teachers are only graded. Rate limited (`QUIZ_THROTTLE_RATE`) |
+| `GET /quiz-attempts/?quiz=` | Signed in | My saved attempts, newest first |
+| `GET /teaching/quiz-results/?quiz=&school_name=&class_name=` | Teacher | Every student of the class with attempt count, best and latest score, and per question how many got it right (latest attempt per student) |
+
+On the frontend, quizzes are at `/quizzes`; students see their scores on `/my-work` and teachers
+see class results on `/teaching`.
 
 ## Importing craft village data
 

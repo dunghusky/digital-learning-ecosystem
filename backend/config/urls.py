@@ -8,6 +8,7 @@ api_v1_patterns = [
     path("", include("apps.villages.urls")),
     path("", include("apps.archive.urls")),
     path("", include("apps.lessons.urls")),
+    path("", include("apps.quizzes.urls")),
 ]
 
 urlpatterns = [

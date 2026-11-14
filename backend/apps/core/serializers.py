@@ -24,3 +24,30 @@ class RelatedLessonsMixin(serializers.Serializer):
     def get_lessons(self, obj) -> list[dict]:
         lessons = obj.lessons.published().order_by("grade", "title")
         return LessonRefSerializer(lessons, many=True).data
+
+
+class QuizRefSerializer(serializers.Serializer):
+    """The smallest link to a quiz, for "quizzes" on lessons, documents and villages."""
+
+    slug = serializers.SlugField(read_only=True)
+    title = serializers.CharField(read_only=True)
+    grade_level = serializers.CharField(read_only=True)
+    time_limit_minutes = serializers.IntegerField(read_only=True, allow_null=True)
+
+
+class RelatedQuizzesMixin(serializers.Serializer):
+    """Adds ``quizzes``: the published quizzes about this object, by title.
+
+    By default they are ``obj.quizzes`` (lessons and villages link quizzes directly); override
+    ``related_quizzes`` when the link is indirect, as for documents used in quiz questions.
+    """
+
+    quizzes = serializers.SerializerMethodField()
+
+    def related_quizzes(self, obj):
+        return obj.quizzes.all()
+
+    @extend_schema_field(QuizRefSerializer(many=True))
+    def get_quizzes(self, obj) -> list[dict]:
+        quizzes = self.related_quizzes(obj).published().distinct().order_by("title")
+        return QuizRefSerializer(quizzes, many=True).data

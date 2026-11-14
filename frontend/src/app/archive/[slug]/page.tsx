@@ -9,6 +9,7 @@ import { DocumentCard } from "@/components/archive/document-card";
 import { GenreLabel } from "@/components/archive/document-parts";
 import { Reader } from "@/components/archive/reader";
 import { RelatedLessons } from "@/components/lessons/related-lessons";
+import { RelatedQuizzes } from "@/components/quizzes/related-quizzes";
 import { MiniMap } from "@/components/map/mini-map";
 import { toMiniMapPlaces } from "@/components/map/mini-map-places";
 import { CRAFT_META } from "@/lib/craft-meta";
@@ -139,6 +140,7 @@ export default async function DocumentPage({ params }: { params: Params }) {
       <SourceBox document={document} t={t} />
 
       <RelatedLessons lessons={document.lessons} title={t("archive.lessons")} />
+      <RelatedQuizzes quizzes={document.quizzes} />
 
       {document.related.length > 0 && (
         <section className="mt-14">
