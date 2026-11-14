@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
 import { SubjectBadge } from "@/components/lessons/lesson-parts";
+import { MyQuizResults } from "@/components/quizzes/my-quiz-results";
 import { buttonClass } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -116,6 +117,8 @@ function MyWork({ user }: { user: CurrentUser }) {
           </div>
         )}
       </div>
+
+      <MyQuizResults />
     </div>
   );
 }

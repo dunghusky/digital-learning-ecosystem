@@ -7,6 +7,7 @@ import { getTranslations } from "next-intl/server";
 import { DocumentCard } from "@/components/archive/document-card";
 import { CraftBadge } from "@/components/craft-badge";
 import { RelatedLessons } from "@/components/lessons/related-lessons";
+import { RelatedQuizzes } from "@/components/quizzes/related-quizzes";
 import { HorizontalScroller } from "@/components/ui/horizontal-scroller";
 import { MiniMap } from "@/components/map/mini-map";
 import { toMiniMapPlaces } from "@/components/map/mini-map-places";
@@ -158,6 +159,7 @@ export default async function VillageDetailPage({ params }: { params: Params }) 
       )}
 
       <RelatedLessons lessons={village.lessons} title={t("village.lessons")} />
+      <RelatedQuizzes quizzes={village.quizzes} />
     </main>
   );
 }

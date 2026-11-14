@@ -38,6 +38,7 @@ LOCAL_APPS = [
     "apps.villages",
     "apps.archive",
     "apps.lessons",
+    "apps.quizzes",
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -106,9 +107,12 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    # Only views that set throttle_scope are throttled (login, sign-up, token refresh).
+    # Only views that set throttle_scope are throttled (login, sign-up, refresh, quiz grading).
     "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.ScopedRateThrottle"],
-    "DEFAULT_THROTTLE_RATES": {"auth": env("AUTH_THROTTLE_RATE", default="20/min")},
+    "DEFAULT_THROTTLE_RATES": {
+        "auth": env("AUTH_THROTTLE_RATE", default="20/min"),
+        "quiz": env("QUIZ_THROTTLE_RATE", default="30/min"),
+    },
 }
 
 SIMPLE_JWT = {
