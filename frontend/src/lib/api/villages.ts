@@ -1,4 +1,5 @@
 import { ApiError, apiFetch, type Paginated } from "./client";
+import type { LessonRef } from "./lessons";
 
 export type CraftType =
   | "conical_hat"
@@ -49,6 +50,8 @@ export interface VillageDetail extends VillageSummary {
   visitor_info: string;
   contact: string;
   sources: string;
+  /** Published lessons about the village. */
+  lessons: LessonRef[];
   published_at: string | null;
   updated_at: string;
 }
@@ -63,6 +66,32 @@ export interface VillageQuery {
 
 export function fetchVillages(query: VillageQuery = {}): Promise<Paginated<VillageSummary>> {
   return apiFetch<Paginated<VillageSummary>>("/villages/", { params: { ...query } });
+}
+
+/** GeoJSON Feature from `/villages/map/`; `geometry` is null until coordinates are entered. */
+export interface VillageFeature {
+  type: "Feature";
+  /** The village code. */
+  id: string;
+  /** GeoJSON order: [longitude, latitude]. */
+  geometry: { type: "Point"; coordinates: [number, number] } | null;
+  properties: Pick<
+    VillageSummary,
+    "name" | "craft_type" | "former_region" | "commune" | "main_products" | "short_description"
+  > & {
+    /** Published archive documents about the village. */
+    document_count: number;
+  };
+}
+
+export interface VillageFeatureCollection {
+  type: "FeatureCollection";
+  features: VillageFeature[];
+}
+
+/** Every published village in one response, for the map. */
+export function fetchVillageMap(): Promise<VillageFeatureCollection> {
+  return apiFetch<VillageFeatureCollection>("/villages/map/");
 }
 
 /** Returns null when the village does not exist or has not been published yet. */

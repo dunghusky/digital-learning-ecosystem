@@ -1,9 +1,22 @@
+from django.db.models import Count, Q
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 from rest_framework import filters, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
+from rest_framework.response import Response
+
+from apps.core.filters import AccentInsensitiveSearchFilter
+from apps.core.models import PublicationStatus
 
 from .models import CraftVillage
-from .serializers import CraftVillageDetailSerializer, CraftVillageListSerializer
+from .serializers import (
+    CraftVillageDetailSerializer,
+    CraftVillageFeatureSerializer,
+    CraftVillageListSerializer,
+)
 
 
 class CraftVillageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -14,7 +27,11 @@ class CraftVillageViewSet(viewsets.ReadOnlyModelViewSet):
 
     permission_classes = [AllowAny]
     lookup_field = "code"
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        AccentInsensitiveSearchFilter,
+        filters.OrderingFilter,
+    ]
     filterset_fields = ["craft_type", "former_region", "recognition_status"]
     search_fields = ["name", "main_products", "commune", "former_commune", "short_description"]
     ordering_fields = ["name", "published_at"]
@@ -26,3 +43,22 @@ class CraftVillageViewSet(viewsets.ReadOnlyModelViewSet):
         if self.action == "retrieve":
             return CraftVillageDetailSerializer
         return CraftVillageListSerializer
+
+    @extend_schema(
+        summary="Villages as a GeoJSON FeatureCollection",
+        description=(
+            "Every published village in one unpaginated response, for the map. Villages "
+            "without coordinates have `geometry: null`; `properties.document_count` counts the "
+            "published archive documents about the village. Accepts the same filters as the list."
+        ),
+        responses=OpenApiTypes.OBJECT,
+    )
+    @action(detail=False, url_path="map", url_name="map", pagination_class=None)
+    def map_features(self, request: Request) -> Response:
+        # Only published documents count: the map links the number to the public archive.
+        published_documents = Q(documents__status=PublicationStatus.PUBLISHED)
+        villages = self.filter_queryset(self.get_queryset()).annotate(
+            document_count=Count("documents", filter=published_documents, distinct=True)
+        )
+        features = CraftVillageFeatureSerializer(villages, many=True).data
+        return Response({"type": "FeatureCollection", "features": features})

@@ -8,30 +8,135 @@
   "nav": {
     "home": "Trang chủ",
     "villages": "Làng nghề",
-    "map": "Bản đồ"
+    "map": "Bản đồ",
+    "archive": "Kho tư liệu",
+    "explore": "Khám phá ngay",
+    "login": "Đăng nhập",
+    "lessons": "Bài học"
   },
   "home": {
-    "heroTitle": "Khám phá làng nghề truyền thống Quảng Trị",
-    "heroLead": "Tìm hiểu lịch sử, con người và câu chuyện của những làng nghề trên quê hương, qua tư liệu do chính học sinh sưu tầm và kể lại.",
-    "exploreVillages": "Xem danh sách làng nghề",
-    "featuredTitle": "Làng nghề tiêu biểu",
-    "featuredEmpty": "Chưa có làng nghề nào được xuất bản."
+    "badge": "Số hóa di sản – Đánh thức tình yêu quê hương",
+    "heroTitle1": "Khám phá làng nghề",
+    "heroHighlight": "quê hương Quảng Trị.",
+    "heroLead": "Tìm hiểu lịch sử, con người và câu chuyện của những làng nghề truyền thống, qua tư liệu do chính học sinh sưu tầm và kể lại.",
+    "searchLabel": "Tìm làng nghề",
+    "searchSubmit": "Tìm kiếm",
+    "searchExamples": [
+      "Làng làm nón lá ở đâu?",
+      "Nước mắm truyền thống",
+      "Làng mây tre đan",
+      "Bánh bột lọc, bún, bánh tráng…"
+    ],
+    "searchNote": "Miễn phí cho học sinh, thầy cô và mọi người yêu làng nghề.",
+    "tryAsking": "Gợi ý",
+    "featuredEyebrow": "Làng nghề tiêu biểu",
+    "featuredTitle": "Những làng nghề đang chờ em khám phá",
+    "featuredLead": "Mỗi làng là một câu chuyện về đôi bàn tay khéo léo của người Quảng Trị.",
+    "featuredEmpty": "Chưa có làng nghề nào được xuất bản.",
+    "seeAll": "Xem tất cả",
+    "featuresEyebrow": "Học gì ở đây?",
+    "featuresTitle1": "Học qua làng nghề.",
+    "featuresTitle2": "Hiểu thêm quê hương.",
+    "soon": "Sắp có",
+    "features": {
+      "map": {
+        "title": "Bản đồ làng nghề",
+        "text": "Bay qua Quảng Trị trên bản đồ 3D và tìm làng nghề gần nhà em."
+      },
+      "archive": {
+        "title": "Kho tư liệu",
+        "text": "Ca dao, tục ngữ, câu đố và câu chuyện gắn với từng làng nghề."
+      },
+      "lessons": {
+        "title": "Bài học",
+        "text": "Bài học Tiếng Việt – Ngữ văn địa phương lấy chất liệu từ làng nghề."
+      },
+      "quiz": {
+        "title": "Đố vui",
+        "text": "Thử tài hiểu biết, sưu tầm huy hiệu và thi đua cùng các bạn."
+      }
+    },
+    "stepsEyebrow": "Cách học",
+    "stepsTitle": "Khám phá, tìm hiểu, rồi kể lại.",
+    "steps": {
+      "explore": {
+        "title": "Khám phá",
+        "text": "Chọn một làng nghề trên bản đồ hoặc trong danh sách."
+      },
+      "learn": {
+        "title": "Tìm hiểu",
+        "text": "Đọc lịch sử, quy trình làm nghề và tư liệu dân gian."
+      },
+      "share": {
+        "title": "Kể lại",
+        "text": "Viết, chụp ảnh và kể lại câu chuyện làng nghề theo cách của em."
+      }
+    },
+    "photoCredits": "Nguồn ảnh",
+    "photos": {
+      "hienLuong": "Cầu Hiền Lương",
+      "hatArtisan": "Nghệ nhân chằm nón",
+      "cuaTung": "Sông Cửa Tùng",
+      "citadel": "Thành cổ Quảng Trị",
+      "conicalHat": "Nón lá",
+      "phongNha": "Động Phong Nha"
+    },
+    "daily": {
+      "eyebrow": "Ca dao hôm nay",
+      "read": "Đọc trọn bài",
+      "sectionEyebrow": "Mỗi ngày một bài",
+      "sectionTitle": "Đọc một câu ca dao, rồi đi khám phá làng nghề"
+    },
+    "explore": {
+      "map": {
+        "title": "Khám phá bản đồ",
+        "text": "Bay qua Quảng Trị trên bản đồ 3D, tìm {count} làng nghề truyền thống."
+      },
+      "archive": {
+        "title": "Vào kho tư liệu",
+        "text": "{count} bài ca dao, câu đố, truyện kể về làng nghề."
+      }
+    }
   },
   "villages": {
     "title": "Làng nghề Quảng Trị",
     "lead": "Danh sách các làng nghề, nghề truyền thống đã được số hóa.",
     "count": "{count, plural, =0 {Không có làng nghề nào} one {# làng nghề} other {# làng nghề}}",
-    "empty": "Không tìm thấy làng nghề phù hợp. Thử bỏ bớt điều kiện lọc.",
+    "empty": "Không tìm thấy làng nghề phù hợp",
+    "emptyHint": "Thử bỏ bớt điều kiện lọc hoặc tìm bằng từ khóa khác.",
     "search": "Tìm kiếm",
     "searchPlaceholder": "Tên làng, sản phẩm, xã...",
     "craftType": "Loại nghề",
     "region": "Khu vực",
     "all": "Tất cả",
-    "filter": "Lọc",
     "reset": "Xóa lọc",
     "previous": "Trang trước",
     "next": "Trang sau",
     "notFound": "Không tìm thấy làng nghề này."
+  },
+  "map": {
+    "title": "Bản đồ làng nghề",
+    "lead": "Khám phá các làng nghề trên bản đồ: bấm vào một điểm để xem làng đó làm nghề gì và đọc tư liệu về làng.",
+    "located": "Đã định vị {located}/{total} làng nghề",
+    "terrain3d": "3D",
+    "archipelago": {
+      "paracel": "Quần đảo Hoàng Sa\n(Việt Nam)",
+      "spratly": "Quần đảo Trường Sa\n(Việt Nam)"
+    },
+    "basemap": {
+      "label": "Kiểu bản đồ",
+      "map": "Bản đồ",
+      "satellite": "Vệ tinh"
+    },
+    "eyebrow": "Bản đồ",
+    "mini": {
+      "label": "Bản đồ vị trí: {names}",
+      "openFull": "Xem trên bản đồ lớn"
+    },
+    "popup": {
+      "viewProfile": "Xem hồ sơ",
+      "documents": "{count} tư liệu"
+    }
   },
   "village": {
     "products": "Sản phẩm chính",
@@ -48,7 +153,13 @@
     "visitorInfo": "Thông tin tham quan",
     "contact": "Liên hệ",
     "sources": "Nguồn tham khảo",
-    "updatedAt": "Cập nhật lần cuối"
+    "updatedAt": "Cập nhật lần cuối",
+    "documents": "Ca dao, truyền thuyết về làng",
+    "allDocuments": "Xem cả {count} tư liệu",
+    "documentsLead": "{count} tư liệu: thơ ca, câu đố, truyện kể gắn với làng nghề.",
+    "scrollPrevious": "Xem các tư liệu trước",
+    "scrollNext": "Xem các tư liệu tiếp theo",
+    "lessons": "Bài học về làng nghề này"
   },
   "craftType": {
     "conical_hat": "Nón lá",
@@ -75,7 +186,332 @@
     "quang_tri": "Quảng Trị cũ",
     "quang_binh": "Quảng Bình cũ"
   },
+  "archive": {
+    "eyebrow": "Kho tư liệu",
+    "title": "Kho tư liệu làng nghề",
+    "lead": "Ca dao, hò, câu đố, truyền thuyết và những câu chuyện gắn với làng nghề Quảng Trị.",
+    "count": "{count, plural, =0 {Không có tư liệu nào} other {# tư liệu}}",
+    "allGenres": "Tất cả",
+    "gradeLevel": "Cấp học",
+    "village": "Làng nghề",
+    "allVillages": "Mọi làng nghề",
+    "search": "Tìm kiếm",
+    "searchPlaceholder": "Tên bài, câu chữ, làng nghề...",
+    "reset": "Xóa lọc",
+    "empty": "Không tìm thấy tư liệu phù hợp",
+    "emptyHint": "Thử chọn thể loại khác hoặc tìm bằng từ khóa khác.",
+    "random": "Ngẫu nhiên",
+    "readMore": "Đọc tiếp",
+    "showAnswer": "Xem đáp án",
+    "hideAnswer": "Lật lại",
+    "answer": "Đáp án",
+    "notFound": "Không tìm thấy tư liệu này.",
+    "glossary": "Từ ngữ",
+    "readingQuestions": "Tìm hiểu văn bản",
+    "fontSmaller": "Thu nhỏ chữ",
+    "fontLarger": "Phóng to chữ",
+    "listen": "Nghe đọc",
+    "stopListening": "Dừng đọc",
+    "share": "Chia sẻ",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép",
+    "sourceAndLicense": "Nguồn & giấy phép",
+    "author": "Tác giả",
+    "collector": "Người sưu tầm",
+    "source": "Nguồn",
+    "viewSource": "Xem nguồn gốc",
+    "relatedVillages": "Làng nghề liên quan",
+    "related": "Tư liệu liên quan",
+    "previous": "Trang trước",
+    "next": "Trang sau",
+    "lessons": "Bài học dùng tư liệu này"
+  },
+  "genre": {
+    "folk_verse": "Ca dao",
+    "proverb": "Tục ngữ",
+    "work_song": "Hò lao động",
+    "narrative_verse": "Vè",
+    "nursery_rhyme": "Đồng dao",
+    "riddle": "Câu đố",
+    "legend": "Truyền thuyết",
+    "folk_tale": "Truyện dân gian",
+    "poem": "Thơ",
+    "essay": "Bạn có biết",
+    "reportage": "Phóng sự",
+    "interview": "Lời nghệ nhân"
+  },
+  "gradeLevel": {
+    "primary": "Tiểu học",
+    "secondary": "THCS",
+    "all": "Mọi cấp học"
+  },
+  "license": {
+    "folk_attributed": "Văn học dân gian, có dẫn nguồn",
+    "own_work": "Do thầy cô, học sinh của trường biên soạn",
+    "permission_granted": "Sử dụng với sự đồng ý của tác giả",
+    "cc_by": "Creative Commons Ghi công (CC BY)",
+    "unknown": "Chưa rõ"
+  },
+  "notFound": {
+    "title": "Không tìm thấy trang này",
+    "hint": "Có thể đường dẫn đã thay đổi hoặc nội dung chưa được xuất bản.",
+    "home": "Về trang chủ"
+  },
   "error": {
-    "loadFailed": "Không tải được dữ liệu. Vui lòng thử lại sau."
+    "title": "Ối, có lỗi rồi!",
+    "loadFailed": "Không tải được dữ liệu. Vui lòng thử lại sau.",
+    "retry": "Thử lại"
+  },
+  "auth": {
+    "scene": {
+      "eyebrow": "Câu ca dao hôm nay",
+      "fallbackLines": [
+        "Muốn sang thì bắc cầu Kiều,",
+        "Muốn con hay chữ thì yêu lấy thầy."
+      ],
+      "fallbackTitle": "Ca dao Việt Nam"
+    },
+    "form": {
+      "username": "Tên đăng nhập",
+      "usernameHint": "Chữ không dấu, số và . _ -, ví dụ: an.nguyen",
+      "password": "Mật khẩu",
+      "passwordHint": "Ít nhất 8 ký tự, đừng dùng toàn số hay trùng tên đăng nhập.",
+      "school": "Tên trường",
+      "class": "Lớp",
+      "classPlaceholder": "VD: 6A",
+      "phone": "Số điện thoại",
+      "email": "Email",
+      "showPassword": "Hiện mật khẩu",
+      "hidePassword": "Ẩn mật khẩu",
+      "requiredNote": "Mục có dấu * là bắt buộc.",
+      "schoolPlaceholder": "VD: TH và THCS Thiện Thành"
+    },
+    "login": {
+      "eyebrow": "Chào bạn quay lại",
+      "title": "Đăng nhập",
+      "lead": "Tiếp tục hành trình khám phá làng nghề và những câu ca dao quê mình.",
+      "submit": "Đăng nhập",
+      "submitting": "Đang đăng nhập…",
+      "registered": "Đăng ký thành công! Mời bạn nhập lại tên đăng nhập và mật khẩu để vào.",
+      "noAccount": "Chưa có tài khoản?",
+      "toRegister": "Đăng ký ngay"
+    },
+    "register": {
+      "eyebrow": "Dành cho học sinh",
+      "title": "Tạo tài khoản",
+      "lead": "Tự đặt tên đăng nhập và mật khẩu để lưu bài học, làm quiz và kể chuyện về làng nghề quê em.",
+      "submit": "Đăng ký",
+      "submitting": "Đang tạo tài khoản…",
+      "haveAccount": "Đã có tài khoản?",
+      "toLogin": "Đăng nhập"
+    },
+    "errors": {
+      "required": "Vui lòng điền {field}.",
+      "username": "Tên đăng nhập 3–150 ký tự, chỉ gồm chữ không dấu, số và . _ - @ +",
+      "usernameTaken": "Tên đăng nhập này đã có người dùng, bạn chọn tên khác nhé.",
+      "passwordShort": "Mật khẩu cần ít nhất 8 ký tự.",
+      "phone": "Số điện thoại gồm 9–15 chữ số.",
+      "email": "Email chưa đúng định dạng.",
+      "badCredentials": "Tên đăng nhập hoặc mật khẩu chưa đúng.",
+      "throttled": "Bạn thử nhiều lần quá, đợi một phút rồi thử lại nhé.",
+      "network": "Không kết nối được máy chủ, bạn kiểm tra mạng rồi thử lại.",
+      "unknown": "Có lỗi xảy ra, bạn thử lại sau nhé.",
+      "missingCount": "Bạn còn {count} mục bắt buộc chưa điền, xem các ô viền đỏ bên dưới nhé.",
+      "passwordMismatch": "Hai mật khẩu mới chưa giống nhau.",
+      "currentPasswordWrong": "Mật khẩu hiện tại chưa đúng."
+    },
+    "account": {
+      "title": "Tài khoản của tôi",
+      "joined": "Tham gia {date}",
+      "roles": {
+        "student": "Học sinh",
+        "teacher": "Giáo viên",
+        "school_admin": "Quản trị nhà trường",
+        "editor": "Biên tập viên"
+      },
+      "profileTitle": "Thông tin của em",
+      "profileLead": "Sửa lại trường, lớp hoặc cách liên lạc khi cần. Tên đăng nhập không đổi được.",
+      "passwordTitle": "Đổi mật khẩu",
+      "passwordLead": "Nhập mật khẩu đang dùng rồi đặt mật khẩu mới.",
+      "currentPassword": "Mật khẩu hiện tại",
+      "newPassword": "Mật khẩu mới",
+      "confirmPassword": "Nhập lại mật khẩu mới",
+      "changePassword": "Đổi mật khẩu",
+      "passwordChanged": "Đã đổi mật khẩu. Lần sau đăng nhập bằng mật khẩu mới nhé.",
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu…",
+      "saved": "Đã lưu",
+      "saveFailed": "Chưa lưu được, bạn thử lại sau nhé."
+    }
+  },
+  "account": {
+    "classLabel": "Lớp {name}",
+    "signOut": "Đăng xuất",
+    "myAccount": "Tài khoản của tôi"
+  },
+  "lessons": {
+    "eyebrow": "Bài học",
+    "title": "Bài học Tiếng Việt & Ngữ văn",
+    "lead": "Đọc ca dao, câu đố, truyện kể về làng nghề quê mình, rồi viết, sáng tạo và đi tìm hiểu thực tế.",
+    "count": "{count, plural, =0 {Chưa có bài học nào} other {# bài học}}",
+    "subjectLabel": "Môn học",
+    "allSubjects": "Tất cả",
+    "gradeLabel": "Khối lớp",
+    "grade": "Lớp {grade}",
+    "subject": {
+      "vietnamese": "Tiếng Việt",
+      "literature": "Ngữ văn"
+    },
+    "taskKind": {
+      "reading": "Đọc hiểu",
+      "writing": "Viết",
+      "creative": "Sáng tạo",
+      "fieldwork": "Đi thực tế"
+    },
+    "reset": "Xóa lọc",
+    "empty": "Chưa có bài học phù hợp",
+    "emptyHint": "Thử chọn môn hoặc khối lớp khác.",
+    "previous": "Trang trước",
+    "next": "Trang sau",
+    "open": "Vào bài học",
+    "documentCount": "{count, plural, =0 {Chưa có tư liệu} other {# tư liệu}}",
+    "taskCount": "{count, plural, =0 {Chưa có nhiệm vụ} other {# nhiệm vụ}}",
+    "author": "Giáo viên soạn: {name}",
+    "objectives": "Mục tiêu bài học",
+    "introduction": "Khởi động",
+    "readings": "Đọc tư liệu",
+    "readingNumber": "Văn bản {number}",
+    "tasks": "Nhiệm vụ của em",
+    "expectedOutput": "Sản phẩm cần có",
+    "work": {
+      "loading": "Đang chuẩn bị bài làm...",
+      "placeholder": "Em viết câu trả lời ở đây...",
+      "hint": "Gợi ý",
+      "autosave": "Bài làm được lưu tự động khi em gõ.",
+      "saving": "Đang lưu...",
+      "saved": "Đã lưu nháp",
+      "savedLocally": "Đã lưu trên máy này",
+      "saveFailed": "Chưa lưu được. Em gõ tiếp, hệ thống sẽ thử lại.",
+      "submit": "Nộp bài",
+      "confirm": "Nộp rồi thì không sửa được nữa. Em nộp nhé?",
+      "confirmSubmit": "Nộp bài",
+      "cancel": "Xem lại",
+      "emptyWork": "Em hãy trả lời ít nhất một nhiệm vụ trước khi nộp.",
+      "submitFailed": "Chưa nộp được bài. Em kiểm tra mạng rồi thử lại nhé.",
+      "teacher": "thầy cô",
+      "assignedBy": "Bài được {teacher} giao cho lớp em",
+      "due": "Hạn nộp: {date}",
+      "overdue": "Đã quá hạn nộp ({date}), em vẫn nộp được nhưng sẽ ghi là nộp muộn.",
+      "handedIn": "Em đã nộp bài lúc {date}",
+      "late": "Nộp muộn",
+      "waitingFeedback": "Thầy cô sẽ nhận xét sớm. Em quay lại xem nhé!",
+      "feedbackFrom": "Nhận xét của {teacher}",
+      "score": "{score}/10",
+      "login": "Đăng nhập",
+      "local": {
+        "guest": "Em có thể làm thử ngay; bài làm được lưu trên máy này. Đăng nhập để nộp bài cho thầy cô.",
+        "notAssigned": "Bài này chưa được giao cho lớp em. Em vẫn luyện tập được, bài làm lưu trên máy này.",
+        "notStudent": "Bạn đang xem bài với tài khoản giáo viên. Học sinh sẽ làm và nộp bài ở đây."
+      }
+    }
+  },
+  "classwork": {
+    "denied": "Trang này không dành cho tài khoản của bạn",
+    "toLessons": "Xem các bài học",
+    "status": {
+      "late": "Nộp muộn",
+      "student": {
+        "notStarted": "Chưa làm",
+        "draft": "Đang làm",
+        "submitted": "Chờ nhận xét",
+        "reviewed": "Đã có nhận xét"
+      },
+      "teacher": {
+        "notStarted": "Chưa bắt đầu",
+        "draft": "Đang làm",
+        "submitted": "Cần nhận xét",
+        "reviewed": "Đã nhận xét"
+      }
+    },
+    "myWork": {
+      "title": "Bài của em",
+      "lead": "Bài thầy cô giao cho lớp {className} – {school}.",
+      "onlyStudents": "Chỉ tài khoản học sinh mới có bài được giao.",
+      "failed": "Chưa tải được bài của em",
+      "retry": "Thử lại",
+      "empty": "Lớp em chưa được giao bài nào",
+      "emptyHint": "Trong lúc chờ, em có thể vào kho bài học để luyện tập nhé.",
+      "browse": "Xem các bài học",
+      "groups": {
+        "todo": "Cần làm",
+        "waiting": "Đã nộp, chờ thầy cô",
+        "reviewed": "Đã có nhận xét"
+      },
+      "from": "Giao bởi {teacher}",
+      "teacher": "thầy cô",
+      "due": "Hạn nộp: {date}",
+      "action": {
+        "notStarted": "Bắt đầu làm",
+        "draft": "Làm tiếp",
+        "submitted": "Xem bài đã nộp",
+        "reviewed": "Xem nhận xét"
+      }
+    },
+    "teaching": {
+      "title": "Khu giáo viên",
+      "lead": "Giao bài cho lớp, theo dõi bài nộp và nhận xét cho học sinh.",
+      "onlyTeachers": "Chỉ giáo viên mới giao bài và chấm bài được. Nếu bạn là giáo viên, nhờ quản trị đổi vai trò tài khoản.",
+      "assignTitle": "Giao bài mới",
+      "lesson": "Bài học",
+      "pickLesson": "Chọn bài học...",
+      "loadingLessons": "Đang tải danh sách bài...",
+      "lessonOption": "{title} (lớp {grade})",
+      "school": "Trường",
+      "class": "Lớp",
+      "dueAt": "Hạn nộp",
+      "dueHint": "Không bắt buộc. Nộp sau hạn vẫn được, nhưng sẽ ghi là nộp muộn.",
+      "note": "Lời dặn học sinh",
+      "notePlaceholder": "Ví dụ: Các em hỏi ông bà trước khi làm nhiệm vụ 3.",
+      "assign": "Giao bài",
+      "created": "Đã giao “{lesson}” cho lớp {className}.",
+      "errors": {
+        "lesson": "Vui lòng chọn bài học",
+        "school": "Vui lòng điền tên trường",
+        "class": "Vui lòng điền lớp",
+        "duplicate": "Lớp này đã được giao bài học này rồi",
+        "failed": "Chưa giao được bài. Vui lòng thử lại."
+      },
+      "listTitle": "Bài đã giao",
+      "failed": "Chưa tải được danh sách bài đã giao",
+      "retry": "Thử lại",
+      "empty": "Bạn chưa giao bài nào",
+      "emptyHint": "Chọn một bài học ở trên và giao cho lớp của bạn.",
+      "classOf": "Lớp {className} – {school}",
+      "due": "Hạn: {date}",
+      "viewWork": "{count, plural, =0 {Xem lớp} other {Xem # bài nộp}}",
+      "delete": "Xóa bài đã giao",
+      "confirmDelete": "Xóa bài “{lesson}” đã giao? Bài làm của học sinh cho lần giao này cũng bị xóa."
+    },
+    "classWork": {
+      "title": "Bài nộp của lớp",
+      "back": "Khu giáo viên",
+      "missing": "Không tìm thấy bài đã giao này",
+      "classOf": "Lớp {className} – {school}",
+      "due": "Hạn nộp: {date}",
+      "progress": "{handedIn}/{total} học sinh đã nộp bài",
+      "noStudents": "Chưa có học sinh nào trong lớp này",
+      "noStudentsHint": "Học sinh cần đăng ký đúng tên trường và lớp như khi bạn giao bài.",
+      "handedInAt": "nộp lúc {date}",
+      "noAnswer": "(Bỏ trống)",
+      "feedbackTitle": "Nhận xét của thầy cô",
+      "comment": "Nhận xét",
+      "commentPlaceholder": "Em viết rất có cảm xúc, ...",
+      "commentRequired": "Vui lòng viết nhận xét",
+      "score": "Điểm",
+      "outOfTen": "trên 10, có thể bỏ trống",
+      "scoreInvalid": "Điểm phải từ 0 đến 10, ví dụ 8 hoặc 8,5",
+      "sendFeedback": "Gửi nhận xét",
+      "updateFeedback": "Cập nhật nhận xét"
+    }
   }
 }

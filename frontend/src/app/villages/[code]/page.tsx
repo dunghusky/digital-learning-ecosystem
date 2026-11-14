@@ -1,10 +1,22 @@
+import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
+import { DocumentCard } from "@/components/archive/document-card";
+import { CraftBadge } from "@/components/craft-badge";
+import { RelatedLessons } from "@/components/lessons/related-lessons";
+import { HorizontalScroller } from "@/components/ui/horizontal-scroller";
+import { MiniMap } from "@/components/map/mini-map";
+import { toMiniMapPlaces } from "@/components/map/mini-map-places";
+import { fetchDocuments } from "@/lib/api/documents";
 import { fetchVillage, type VillageDetail } from "@/lib/api/villages";
 
 type Params = Promise<{ code: string }>;
+
+/** Cards in the sideways row; a final card links to the rest in the archive. */
+const VILLAGE_DOCUMENTS_SHOWN = 8;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { code } = await params;
@@ -20,10 +32,10 @@ function Section({ title, text }: { title: string; text: string }) {
     return null;
   }
   return (
-    <section className="mt-6">
-      <h2 className="text-lg font-semibold text-emerald-900">{title}</h2>
+    <section className="mt-10">
+      <h2 className="text-xl font-bold text-ink">{title}</h2>
       {text.split("\n").map((paragraph, index) => (
-        <p key={index} className="mt-2 text-stone-800">
+        <p key={index} className="mt-3 leading-relaxed text-ink/90">
           {paragraph}
         </p>
       ))}
@@ -37,8 +49,8 @@ function Fact({ label, value }: { label: string; value: string }) {
   }
   return (
     <div>
-      <dt className="text-sm text-stone-500">{label}</dt>
-      <dd className="font-medium">{value}</dd>
+      <dt className="text-sm text-ink-muted">{label}</dt>
+      <dd className="mt-0.5 font-semibold text-ink">{value}</dd>
     </div>
   );
 }
@@ -53,7 +65,11 @@ function formatFormerLocation(village: VillageDetail): string {
 
 export default async function VillageDetailPage({ params }: { params: Params }) {
   const { code } = await params;
-  const [t, village] = await Promise.all([getTranslations(), fetchVillage(code)]);
+  const [t, village, documents] = await Promise.all([
+    getTranslations(),
+    fetchVillage(code),
+    fetchDocuments({ village: code }),
+  ]);
 
   if (!village) {
     notFound();
@@ -67,16 +83,19 @@ export default async function VillageDetailPage({ params }: { params: Params }) 
     .join(" ");
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10">
-      <p className="text-sm text-stone-600">
-        {t(`craftType.${village.craft_type}`)} · {t(`region.${village.former_region}`)}
+    <main className="mx-auto max-w-3xl px-4 py-12">
+      <p className="flex flex-wrap items-center gap-x-3 text-sm text-ink-muted">
+        <CraftBadge craftType={village.craft_type} />
+        <span>{t(`region.${village.former_region}`)}</span>
       </p>
-      <h1 className="mt-1 text-3xl font-bold text-emerald-900">{village.name}</h1>
+      <h1 className="mt-3 text-[clamp(2rem,5vw,3rem)] leading-tight font-extrabold tracking-tight text-ink">
+        {village.name}
+      </h1>
       {village.short_description && (
-        <p className="mt-3 text-lg text-stone-700">{village.short_description}</p>
+        <p className="mt-4 text-lg leading-relaxed text-ink-muted">{village.short_description}</p>
       )}
 
-      <dl className="mt-6 grid gap-4 rounded-lg border border-stone-200 bg-white p-4 sm:grid-cols-2">
+      <dl className="mt-8 grid gap-5 rounded-card border border-line bg-surface p-6 shadow-card sm:grid-cols-2">
         <Fact label={t("village.products")} value={village.main_products} />
         <Fact label={t("village.recognition")} value={recognition} />
         <Fact label={t("village.location")} value={formatLocation(village)} />
@@ -85,12 +104,60 @@ export default async function VillageDetailPage({ params }: { params: Params }) 
         <Fact label={t("village.contact")} value={village.contact} />
       </dl>
 
+      <MiniMap places={toMiniMapPlaces([village])} className="mt-8" />
+
       <Section title={t("village.history")} text={village.history} />
       <Section title={t("village.productionProcess")} text={village.production_process} />
       <Section title={t("village.currentSituation")} text={village.current_situation} />
       <Section title={t("village.culture")} text={village.culture} />
       <Section title={t("village.visitorInfo")} text={village.visitor_info} />
       <Section title={t("village.sources")} text={village.sources} />
+
+      {documents.count > 0 && (
+        <section className="mt-14">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-bold text-ink">{t("village.documents")}</h2>
+              <p className="mt-1 text-sm text-ink-muted">
+                {t("village.documentsLead", { count: documents.count })}
+              </p>
+            </div>
+            <Link
+              href={`/archive?village=${code}`}
+              className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
+            >
+              {t("village.allDocuments", { count: documents.count })}
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </div>
+          <div className="mt-4">
+            <HorizontalScroller
+              label={t("village.documents")}
+              previousLabel={t("village.scrollPrevious")}
+              nextLabel={t("village.scrollNext")}
+            >
+              {documents.results.slice(0, VILLAGE_DOCUMENTS_SHOWN).map((document) => (
+                <li key={document.slug} className="w-[min(18rem,80vw)] shrink-0">
+                  <DocumentCard document={document} />
+                </li>
+              ))}
+              {documents.count > VILLAGE_DOCUMENTS_SHOWN && (
+                <li className="w-48 shrink-0">
+                  <Link
+                    href={`/archive?village=${code}`}
+                    className="flex h-full min-h-40 flex-col items-center justify-center gap-2 rounded-card border border-dashed border-line p-5 text-center text-sm font-semibold text-primary transition hover:border-primary/40 hover:bg-surface"
+                  >
+                    <ArrowRight className="size-6" aria-hidden />
+                    {t("village.allDocuments", { count: documents.count })}
+                  </Link>
+                </li>
+              )}
+            </HorizontalScroller>
+          </div>
+        </section>
+      )}
+
+      <RelatedLessons lessons={village.lessons} title={t("village.lessons")} />
     </main>
   );
 }

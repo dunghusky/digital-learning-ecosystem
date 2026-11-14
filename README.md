@@ -16,6 +16,11 @@ Piloted at Thien Thanh Primary & Secondary School, Dien Sanh commune, Quang Tri 
   - [Option 2: Run everything with Docker](#option-2-run-everything-with-docker)
 - [Environment variables](#environment-variables)
 - [Local URLs](#local-urls)
+- [Public API](#public-api)
+- [Accounts API](#accounts-api)
+- [Lessons & classwork API](#lessons--classwork-api)
+- [Importing craft village data](#importing-craft-village-data)
+- [Importing archive documents](#importing-archive-documents)
 - [Linting & testing](#linting--testing)
 - [Conventions](#conventions)
 - [Troubleshooting](#troubleshooting)
@@ -45,8 +50,11 @@ digital-learning-ecosystem/
 │   │   ├── urls.py             # root routes: /admin, /api/v1, /api/docs
 │   │   ├── wsgi.py / asgi.py   # deployment entry points
 │   ├── apps/                   # One Django app per domain module
-│   │   ├── core/               #   shared building blocks, health check
-│   │   └── accounts/           #   users, authentication (JWT)
+│   │   ├── core/               #   shared building blocks, health check, import helpers
+│   │   ├── accounts/           #   users, authentication (JWT)
+│   │   ├── villages/           #   craft villages, GeoJSON for the map
+│   │   ├── archive/            #   folk verse, riddles, stories (the digital archive)
+│   │   └── lessons/            #   lessons, assignments, submissions and feedback
 │   ├── manage.py
 │   ├── requirements.txt        # production dependencies
 │   ├── requirements-dev.txt    # + development tools (pytest, ruff)
@@ -55,7 +63,8 @@ digital-learning-ecosystem/
 │   └── .env.example            # environment variable template
 ├── frontend/                   # Web UI (Next.js)
 │   ├── src/
-│   │   ├── app/                # pages & layouts (App Router)
+│   │   ├── app/                # pages & layouts (App Router): /villages, /map, /archive, /lessons, ...
+│   │   ├── components/         # UI, map (MapLibre), archive, lesson and classwork components
 │   │   └── lib/                # shared utilities (API client, ...)
 │   ├── package.json
 │   ├── next.config.ts
@@ -69,7 +78,7 @@ digital-learning-ecosystem/
 └── README.md
 ```
 
-Upcoming modules (craft villages, digital archive, lessons, quizzes, gamification) will be added as new apps in `backend/apps/` and matching route groups in `frontend/src/app/`.
+Upcoming modules (quizzes, gamification) will be added as new apps in `backend/apps/` and matching route groups in `frontend/src/app/`.
 
 ## Prerequisites
 
@@ -154,6 +163,7 @@ docker compose exec backend python manage.py createsuperuser   # first time only
 | `DJANGO_ALLOWED_HOSTS` | Host names the backend may serve | `localhost,127.0.0.1` |
 | `DATABASE_URL` | PostgreSQL connection string | `postgres://postgres:postgres@localhost:5432/langnghe` |
 | `CORS_ALLOWED_ORIGINS` | Frontend origins allowed to call the API | `http://localhost:3000` |
+| `AUTH_THROTTLE_RATE` | Max sign-up / login / token-refresh / password-change requests per client (optional) | `20/min` |
 
 When running with Docker (Option 2), `docker-compose.yml` switches the `DATABASE_URL` host to `db`; no `.env` change is needed.
 
@@ -174,6 +184,70 @@ When running with Docker (Option 2), `docker-compose.yml` switches the `DATABASE
 | API docs (Swagger) | http://localhost:8000/api/docs/ |
 | Django admin | http://localhost:8000/admin/ |
 | PostgreSQL | `localhost:5432` – user `postgres`, password `postgres`, database `langnghe` |
+
+## Public API
+
+Read-only and anonymous; only *published* content is returned. Base URL: `/api/v1`. The full,
+interactive reference is at `/api/docs/`.
+
+| Endpoint | Description |
+|---|---|
+| `GET /villages/` | Paginated villages. Filters: `craft_type`, `former_region`, `recognition_status`, `search` (accent-insensitive), `ordering` |
+| `GET /villages/{code}/` | One village with its full profile |
+| `GET /villages/map/` | Every village as a GeoJSON `FeatureCollection` (unpaginated, same filters as the list). Unlocated villages have `geometry: null`; `properties.document_count` counts the village's published documents |
+| `GET /documents/` | Paginated documents. Filters: `genre`, `grade_level`, `village` (code), `theme` (slug), `search`, `ordering` |
+| `GET /documents/{slug}/` | One document with its glossary, reading questions, related documents, and its villages including `latitude`/`longitude` (for the mini map) |
+| `GET /documents/featured/?genre=` | A document that changes once a day (the home page's "folk verse of the day") |
+| `GET /documents/random/` | The slug of a random document matching the list filters |
+| `GET /documents/genres/` | Number of published documents per genre |
+| `GET /lessons/` | Paginated lessons. Filters: `subject` (`vietnamese` grades 1–5, `literature` grades 6–9), `grade`, `village` (code), `document` (slug), `search`, `ordering` |
+| `GET /lessons/{slug}/` | One lesson: objectives, introduction, expected output, its documents in reading order (full text + glossary) and its tasks |
+
+Document and village details also list the published `lessons` that use them.
+
+## Accounts API
+
+Students sign themselves up; there is no e-mail verification in the pilot. Base URL:
+`/api/v1/auth`. Authenticated calls send `Authorization: Bearer <access>`.
+
+| Endpoint | Description |
+|---|---|
+| `POST /register/` | Create a student account: `username`, `password`, `school_name`, `class_name` (required), `phone`, `email` (optional). Returns the profile, **not** tokens: the student then logs in |
+| `POST /token/` | Log in with `username` + `password`; returns `access` (30 min) and `refresh` (7 days) |
+| `POST /token/refresh/` | New `access` **and** `refresh`; the old refresh token is revoked (rotation) |
+| `POST /logout/` | Revoke a `refresh` token |
+| `GET /me/` · `PATCH /me/` | Read or edit your profile (`school_name`, `class_name`, `phone`, `email`, names); `username` and `role` are read-only |
+| `POST /password/change/` | `current_password` + `new_password` (Django's password validators apply) |
+
+Sign-up, login, refresh and password change are rate limited (`AUTH_THROTTLE_RATE`). On the
+frontend the session lives in `localStorage` behind `src/lib/auth/session.ts`; components read
+it through `useAuth()` / `useCurrentUser()`, and `authSend()` refreshes an expired access
+token once before retrying.
+
+## Lessons & classwork API
+
+Teachers write lessons in the Django admin (**Lessons → Lessons**): the plan, the archive
+documents to read in order, and the tasks (reading, writing, creative, fieldwork). A teacher is a
+user whose `role` is `teacher` (or `school_admin`); set it in the admin, since sign-up always
+creates students.
+
+Students register with their school and class as free text, so a lesson is **assigned to a
+school name + class name**. Students whose profile matches (case-insensitively, `7b` = `7B`)
+see the assignment. All endpoints below need a signed-in user of the right role.
+
+| Endpoint | Who | Description |
+|---|---|---|
+| `GET /assignments/` | Student | Assignments for my class, each with my submission (answers, status, feedback) or `null` |
+| `GET` · `PUT /assignments/{id}/submission/` | Student | Read or save my draft: `{"answers": [{"task": id, "text": "..."}]}` |
+| `POST /assignments/{id}/submit/` | Student | Save the posted answers and hand the work in. It cannot change afterwards (409); empty work is refused (400). Late work is flagged `is_late` |
+| `GET` · `POST /teaching/assignments/` | Teacher | My assignments (with `submitted_count`) / assign `lesson` (slug) to `school_name` + `class_name`, optional `due_at`, `note`. One assignment per lesson and class |
+| `PATCH` · `DELETE /teaching/assignments/{id}/` | Teacher | Change or remove an assignment (removing it deletes the students' work on it) |
+| `GET /teaching/assignments/{id}/submissions/` | Teacher | Every student of the class plus anyone who worked on it, with their submission. Drafts show their status only, not the answers |
+| `PUT /teaching/submissions/{id}/feedback/` | Teacher | `comment` and optional `score` (0–10) on handed-in work; sending again replaces it |
+
+Teachers only see their own assignments; school admins see all. On the frontend, students work
+on `/lessons/{slug}` (drafts save automatically) and follow their work on `/my-work`; teachers
+use `/teaching`.
 
 ## Importing craft village data
 
@@ -196,6 +270,25 @@ uv run python manage.py import_villages ../docs/data/craft-villages.xlsx --publi
 
 Without `--publish` the import never changes the editorial status, so re-importing an updated
 workbook cannot unpublish a village an editor has already reviewed.
+
+## Importing archive documents
+
+Archive documents (folk verse, proverbs, riddles, legends…) come from
+`docs/data/documents.xlsx` and are matched by `slug`, so re-importing updates rows in place.
+Each import replaces a document's villages, themes and glossary with what the workbook says:
+
+```bash
+cd backend
+uv run python manage.py import_documents ../docs/data/documents.xlsx --dry-run   # report only
+uv run python manage.py import_documents ../docs/data/documents.xlsx
+uv run python manage.py import_documents ../docs/data/documents.xlsx --publish   # also publish
+```
+
+- Rows that fail validation are skipped and listed in the report (e.g. a folk genre without a
+  `source`, or an `answer` on something that is not a riddle).
+- `--publish` never publishes a document whose license is `unknown`.
+- Unknown themes are created with a placeholder name; rename them in the admin.
+- For riddles, a trailing `Đáp án: …` line in the body is moved into `answer`.
 
 ## Linting & testing
 

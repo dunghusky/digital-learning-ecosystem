@@ -1,82 +1,114 @@
+import { Search, X } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+import { buttonClass } from "@/components/ui/button";
+import { Chip } from "@/components/ui/chip";
 import type { VillageQuery } from "@/lib/api/villages";
+import { CRAFT_META, CRAFT_TYPES, REGIONS } from "@/lib/craft-meta";
+import { buildHref } from "@/lib/url";
 
-const CRAFT_TYPES = [
-  "conical_hat",
-  "fish_sauce",
-  "mat_weaving",
-  "bamboo_rattan",
-  "woodwork",
-  "rice_wine",
-  "noodles_cakes",
-  "metalwork",
-  "paper_fan",
-  "broom",
-  "food_specialty",
-  "other",
-] as const;
-const REGIONS = ["quang_tri", "quang_binh"] as const;
+const BASE_PATH = "/villages";
 
 /**
- * A plain GET form: filtering works without JavaScript and every result set keeps a
- * shareable URL.
+ * Every chip is a plain link and the search box a GET form, so filtering works without
+ * JavaScript and each result set keeps a shareable URL. Changing a filter always returns to
+ * the first page because the old page number may no longer exist.
  */
 export function VillageFilters({ query }: { query: VillageQuery }) {
   const t = useTranslations();
-  const selectClass = "rounded border border-stone-300 bg-white px-3 py-2 text-sm";
+  const hrefWith = (changes: Partial<VillageQuery>) =>
+    buildHref(BASE_PATH, { ...query, ...changes, page: undefined });
+  const hasFilters = Boolean(query.search || query.craft_type || query.former_region);
 
   return (
-    <form method="get" className="flex flex-wrap items-end gap-3">
-      <label className="flex flex-col gap-1 text-sm">
-        {t("villages.search")}
-        <input
-          type="search"
-          name="search"
-          defaultValue={query.search ?? ""}
-          placeholder={t("villages.searchPlaceholder")}
-          className={`${selectClass} min-w-56`}
-        />
-      </label>
-
-      <label className="flex flex-col gap-1 text-sm">
-        {t("villages.craftType")}
-        <select name="craft_type" defaultValue={query.craft_type ?? ""} className={selectClass}>
-          <option value="">{t("villages.all")}</option>
-          {CRAFT_TYPES.map((value) => (
-            <option key={value} value={value}>
-              {t(`craftType.${value}`)}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <label className="flex flex-col gap-1 text-sm">
-        {t("villages.region")}
-        <select
-          name="former_region"
-          defaultValue={query.former_region ?? ""}
-          className={selectClass}
-        >
-          <option value="">{t("villages.all")}</option>
-          {REGIONS.map((value) => (
-            <option key={value} value={value}>
-              {t(`region.${value}`)}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <button
-        type="submit"
-        className="rounded bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
+    <div className="space-y-4">
+      <form
+        method="get"
+        role="search"
+        className="flex max-w-xl gap-2 rounded-full border border-line bg-surface p-1.5 shadow-card focus-within:border-primary/60"
       >
-        {t("villages.filter")}
-      </button>
-      <Link href="/villages" className="px-2 py-2 text-sm text-stone-600 hover:text-emerald-700">
-        {t("villages.reset")}
-      </Link>
-    </form>
+        {/* Keep the active chips when submitting a new search. */}
+        {query.craft_type && <input type="hidden" name="craft_type" value={query.craft_type} />}
+        {query.former_region && (
+          <input type="hidden" name="former_region" value={query.former_region} />
+        )}
+        <label className="relative flex-1">
+          <span className="sr-only">{t("villages.search")}</span>
+          <Search
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-muted"
+            aria-hidden
+          />
+          <input
+            type="search"
+            name="search"
+            defaultValue={query.search ?? ""}
+            placeholder={t("villages.searchPlaceholder")}
+            className="w-full bg-transparent py-2 pr-4 pl-9 text-sm text-ink placeholder:text-ink-muted/80 focus:outline-none"
+          />
+        </label>
+        <button type="submit" className={buttonClass("primary", "min-h-10 py-2 text-sm")}>
+          {t("villages.search")}
+        </button>
+      </form>
+
+      <FilterRow label={t("villages.craftType")}>
+        <Chip href={hrefWith({ craft_type: undefined })} active={!query.craft_type}>
+          {t("villages.all")}
+        </Chip>
+        {CRAFT_TYPES.map((craft) => (
+          <Chip
+            key={craft}
+            href={hrefWith({
+              craft_type: query.craft_type === craft ? undefined : craft,
+            })}
+            active={query.craft_type === craft}
+            icon={CRAFT_META[craft].icon}
+            color={CRAFT_META[craft].color}
+          >
+            {t(`craftType.${craft}`)}
+          </Chip>
+        ))}
+      </FilterRow>
+
+      <FilterRow label={t("villages.region")}>
+        <Chip href={hrefWith({ former_region: undefined })} active={!query.former_region}>
+          {t("villages.all")}
+        </Chip>
+        {REGIONS.map((region) => (
+          <Chip
+            key={region}
+            href={hrefWith({
+              former_region: query.former_region === region ? undefined : region,
+            })}
+            active={query.former_region === region}
+          >
+            {t(`region.${region}`)}
+          </Chip>
+        ))}
+      </FilterRow>
+
+      {hasFilters && (
+        <Link
+          href={BASE_PATH}
+          className="inline-flex items-center gap-1 text-sm text-ink-muted hover:text-primary"
+        >
+          <X className="size-4" aria-hidden />
+          {t("villages.reset")}
+        </Link>
+      )}
+    </div>
+  );
+}
+
+/** A labelled chip row: scrolls sideways on phones instead of wrapping into a tall block. */
+function FilterRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div role="group" aria-label={label} className="flex items-center gap-3">
+      <span className="hidden w-20 shrink-0 text-sm text-ink-muted sm:block">{label}</span>
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+        {children}
+      </div>
+    </div>
   );
 }

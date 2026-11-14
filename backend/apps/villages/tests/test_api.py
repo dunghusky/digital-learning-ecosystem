@@ -68,3 +68,87 @@ def test_can_search_by_name(client):
     response = client.get(reverse("village-list"), {"search": "ruou"})
 
     assert [v["code"] for v in response.json()["results"]] == ["kim-long"]
+
+
+def test_map_returns_geojson_with_numeric_lon_lat(client):
+    create_village("tra-loc", latitude="16.712300", longitude="107.245600")
+
+    response = client.get(reverse("village-map"))
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["type"] == "FeatureCollection"
+    [feature] = body["features"]
+    assert feature["id"] == "tra-loc"
+    assert feature["geometry"] == {"type": "Point", "coordinates": [107.2456, 16.7123]}
+    assert feature["properties"]["craft_type"] == CraftType.CONICAL_HAT
+
+
+def test_map_keeps_unlocated_villages_with_null_geometry(client):
+    """The map lists villages that still need coordinates, so they must not be dropped."""
+    create_village("my-thuy")
+
+    [feature] = client.get(reverse("village-map")).json()["features"]
+
+    assert feature["geometry"] is None
+
+
+def test_map_hides_unpublished_villages(client):
+    create_village("tra-loc", latitude="16.7123", longitude="107.2456")
+    create_village("draft-village", status=PublicationStatus.DRAFT)
+
+    features = client.get(reverse("village-map")).json()["features"]
+
+    assert [f["id"] for f in features] == ["tra-loc"]
+
+
+def test_map_is_not_paginated(client):
+    for index in range(25):  # more than PAGE_SIZE
+        create_village(f"village-{index:02d}")
+
+    assert len(client.get(reverse("village-map")).json()["features"]) == 25
+
+
+def test_map_accepts_list_filters(client):
+    create_village("tra-loc")
+    create_village("canh-duong", craft_type=CraftType.FISH_SAUCE)
+
+    response = client.get(reverse("village-map"), {"craft_type": CraftType.FISH_SAUCE.value})
+
+    assert [f["id"] for f in response.json()["features"]] == ["canh-duong"]
+
+
+def test_search_ignores_diacritics(client):
+    create_village("my-thuy", name="Làng nước mắm Mỹ Thủy")
+    create_village("tra-loc", name="Làng nón lá Trà Lộc")
+
+    response = client.get(reverse("village-list"), {"search": "nuoc mam"})
+
+    assert [village["code"] for village in response.json()["results"]] == ["my-thuy"]
+
+
+def test_map_counts_only_published_documents(client):
+    from apps.archive.tests.factories import create_document
+
+    village = create_village("tra-loc")
+    create_village("kim-long")
+    create_document("published-one").villages.add(village)
+    create_document("published-two").villages.add(village)
+    create_document("draft", status=PublicationStatus.DRAFT).villages.add(village)
+
+    features = client.get(reverse("village-map")).json()["features"]
+
+    counts = {f["id"]: f["properties"]["document_count"] for f in features}
+    assert counts == {"tra-loc": 2, "kim-long": 0}
+
+
+def test_map_document_count_is_not_inflated_by_search(client):
+    """Search joins other tables; the count must still be one per document."""
+    from apps.archive.tests.factories import create_document
+
+    village = create_village("tra-loc", name="Lang non la Tra Loc")
+    create_document("one").villages.add(village)
+
+    [feature] = client.get(reverse("village-map"), {"search": "non"}).json()["features"]
+
+    assert feature["properties"]["document_count"] == 1

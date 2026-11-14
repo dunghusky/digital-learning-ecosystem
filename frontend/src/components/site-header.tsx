@@ -1,23 +1,47 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+import { AccountMenu } from "@/components/auth/account-menu";
+import { ButtonLink } from "@/components/ui/button";
+
 export function SiteHeader() {
   const t = useTranslations();
 
   return (
-    <header className="border-b border-stone-200 bg-white">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 px-4 py-4">
-        <Link href="/" className="text-lg font-bold text-emerald-800">
-          {t("site.name")}
+    <header className="sticky top-0 z-40 border-b border-line/70 bg-surface/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+        <Link href="/" className="flex items-center gap-2.5 font-bold text-ink">
+          <span
+            className="grid size-9 place-items-center rounded-xl bg-ink text-sm font-extrabold text-primary-soft"
+            aria-hidden
+          >
+            LN
+          </span>
+          <span className="hidden sm:inline">{t("site.name")}</span>
         </Link>
-        <nav className="flex gap-4 text-sm">
-          <Link href="/" className="hover:text-emerald-700">
-            {t("nav.home")}
-          </Link>
-          <Link href="/villages" className="hover:text-emerald-700">
+        <nav className="flex min-w-0 items-center overflow-x-auto text-sm font-medium whitespace-nowrap text-ink-muted [scrollbar-width:none] sm:gap-4">
+          <Link href="/villages" className="shrink-0 rounded-full px-2 py-2 hover:text-ink sm:px-3">
             {t("nav.villages")}
           </Link>
+          <Link href="/map" className="shrink-0 rounded-full px-2 py-2 hover:text-ink sm:px-3">
+            {t("nav.map")}
+          </Link>
+          <Link href="/archive" className="shrink-0 rounded-full px-2 py-2 hover:text-ink sm:px-3">
+            {t("nav.archive")}
+          </Link>
+          <Link href="/lessons" className="shrink-0 rounded-full px-2 py-2 hover:text-ink sm:px-3">
+            {t("nav.lessons")}
+          </Link>
         </nav>
+        <div className="flex items-center gap-2">
+          <AccountMenu />
+          {/* Hidden on a wrapper: "hidden" on the link itself loses to buttonClass's inline-flex. */}
+          <span className="hidden md:contents">
+            <ButtonLink href="/villages" className="text-sm">
+              {t("nav.explore")}
+            </ButtonLink>
+          </span>
+        </div>
       </div>
     </header>
   );

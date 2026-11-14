@@ -1,7 +1,11 @@
+from dataclasses import dataclass
+from decimal import Decimal
+
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from apps.core.models import PublishableModel
+from apps.core.models import PublishableModel, PublishedQuerySet
 
 
 class CraftType(models.TextChoices):
@@ -33,6 +37,49 @@ class FormerRegion(models.TextChoices):
 
     QUANG_TRI = "quang_tri", _("Former Quang Tri")
     QUANG_BINH = "quang_binh", _("Former Quang Binh")
+
+
+@dataclass(frozen=True)
+class Bounds:
+    south: Decimal
+    north: Decimal
+    west: Decimal
+    east: Decimal
+
+    def contains(self, latitude: Decimal, longitude: Decimal) -> bool:
+        return self.south <= latitude <= self.north and self.west <= longitude <= self.east
+
+
+# A generous box around Quang Tri after the 2025 merger (former Quang Tri + Quang Binh).
+# It is not meant to trace the border, only to catch swapped or mistyped coordinates.
+PROVINCE_BOUNDS = Bounds(
+    south=Decimal("16.0"), north=Decimal("18.2"), west=Decimal("105.5"), east=Decimal("107.6")
+)
+
+
+def location_errors(latitude: Decimal | None, longitude: Decimal | None) -> dict[str, str]:
+    """Field errors for a coordinate pair; empty when the pair is valid or entirely blank.
+
+    Shared by model validation (admin) and the workbook importer, which bypasses ``clean()``.
+    """
+    if latitude is None and longitude is None:
+        return {}
+    if latitude is None or longitude is None:
+        missing = "latitude" if latitude is None else "longitude"
+        return {missing: _("Enter both latitude and longitude, or leave both empty.")}
+    if not PROVINCE_BOUNDS.contains(latitude, longitude):
+        return {
+            "latitude": _(
+                "This point is outside Quang Tri province. Check that latitude and longitude "
+                "are not swapped."
+            )
+        }
+    return {}
+
+
+class CraftVillageQuerySet(PublishedQuerySet):
+    def with_location(self):
+        return self.filter(latitude__isnull=False, longitude__isnull=False)
 
 
 class CraftVillage(PublishableModel):
@@ -92,6 +139,8 @@ class CraftVillage(PublishableModel):
         _("internal notes"), blank=True, help_text=_("Never shown on the public site.")
     )
 
+    objects = CraftVillageQuerySet.as_manager()
+
     class Meta:
         verbose_name = _("craft village")
         verbose_name_plural = _("craft villages")
@@ -100,6 +149,11 @@ class CraftVillage(PublishableModel):
 
     def __str__(self) -> str:
         return self.name
+
+    def clean(self) -> None:
+        super().clean()
+        if errors := location_errors(self.latitude, self.longitude):
+            raise ValidationError(errors)
 
     @property
     def has_location(self) -> bool:

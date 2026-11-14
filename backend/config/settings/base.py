@@ -22,10 +22,12 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.postgres",
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "django_filters",
     "drf_spectacular",
@@ -34,6 +36,8 @@ LOCAL_APPS = [
     "apps.core",
     "apps.accounts",
     "apps.villages",
+    "apps.archive",
+    "apps.lessons",
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -71,6 +75,9 @@ TEMPLATES = [
 DATABASES = {"default": env.db("DATABASE_URL")}
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Admin URL fields assume https:// when the scheme is omitted (Django 6.0 default).
+FORMS_URLFIELD_ASSUME_HTTPS = True
+
 AUTH_USER_MODEL = "accounts.User"
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -99,11 +106,19 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    # Only views that set throttle_scope are throttled (login, sign-up, token refresh).
+    "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.ScopedRateThrottle"],
+    "DEFAULT_THROTTLE_RATES": {"auth": env("AUTH_THROTTLE_RATE", default="20/min")},
 }
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    # Each refresh hands out a new refresh token and retires the old one, so a leaked
+    # token stops working after the next refresh, and logout can revoke it.
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
 }
 
 SPECTACULAR_SETTINGS = {
@@ -114,3 +129,9 @@ SPECTACULAR_SETTINGS = {
 }
 
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
+
+# Nominatim (OpenStreetMap geocoding) requires an identifying User-Agent, ideally with contact
+# details: https://operations.osmfoundation.org/policies/nominatim/
+GEOCODER_USER_AGENT = env(
+    "GEOCODER_USER_AGENT", default="langnghe-quang-tri/0.1 (school project geocoding)"
+)
