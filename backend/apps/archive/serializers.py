@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from apps.core.serializers import RelatedLessonsMixin
 from apps.villages.models import CraftVillage
 
 from .models import Document, GlossaryTerm, Theme
@@ -69,7 +70,7 @@ class DocumentListSerializer(serializers.ModelSerializer):
         return [line for line in lines if line][:EXCERPT_LINES]
 
 
-class DocumentDetailSerializer(DocumentListSerializer):
+class DocumentDetailSerializer(RelatedLessonsMixin, DocumentListSerializer):
     villages = LocatedVillageRefSerializer(many=True, read_only=True)
     glossary = GlossaryTermSerializer(many=True, read_only=True)
     reading_questions = serializers.SerializerMethodField()
@@ -89,6 +90,7 @@ class DocumentDetailSerializer(DocumentListSerializer):
             "published_at",
             "updated_at",
             "related",
+            "lessons",
         ]
 
     def get_reading_questions(self, document: Document) -> list[str]:

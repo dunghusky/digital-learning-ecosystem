@@ -7,6 +7,7 @@ api_v1_patterns = [
     path("auth/", include("apps.accounts.urls")),
     path("", include("apps.villages.urls")),
     path("", include("apps.archive.urls")),
+    path("", include("apps.lessons.urls")),
 ]
 
 urlpatterns = [

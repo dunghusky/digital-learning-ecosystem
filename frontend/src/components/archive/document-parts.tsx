@@ -6,7 +6,7 @@ import { GENRE_META } from "@/lib/genre-meta";
 
 /* Small pieces shared by the archive cards, server and client alike. */
 
-export function GenreLabel({ document }: { document: DocumentSummary }) {
+export function GenreLabel({ document }: { document: Pick<DocumentSummary, "genre"> }) {
   const t = useTranslations("genre");
   const { icon: Icon, color } = GENRE_META[document.genre];
   return (

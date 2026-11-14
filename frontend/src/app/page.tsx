@@ -48,6 +48,7 @@ const FEATURES: {
     icon: Compass,
     tint: "bg-secondary-soft",
     accent: "bg-secondary",
+    href: "/lessons",
   },
   { key: "quiz", icon: Puzzle, tint: "bg-gold-soft", accent: "bg-gold" },
 ];

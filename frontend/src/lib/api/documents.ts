@@ -1,4 +1,5 @@
 import { ApiError, apiFetch, type Paginated } from "./client";
+import type { LessonRef } from "./lessons";
 import type { VillageSummary } from "./villages";
 
 export type Genre =
@@ -64,6 +65,8 @@ export interface DocumentDetail extends DocumentSummary {
   published_at: string | null;
   updated_at: string;
   related: DocumentSummary[];
+  /** Published lessons that read this document. */
+  lessons: LessonRef[];
 }
 
 export interface GenreCount {
