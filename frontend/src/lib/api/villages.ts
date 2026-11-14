@@ -1,4 +1,5 @@
 import { ApiError, apiFetch, type Paginated } from "./client";
+import type { LessonRef } from "./lessons";
 
 export type CraftType =
   | "conical_hat"
@@ -49,6 +50,8 @@ export interface VillageDetail extends VillageSummary {
   visitor_info: string;
   contact: string;
   sources: string;
+  /** Published lessons about the village. */
+  lessons: LessonRef[];
   published_at: string | null;
   updated_at: string;
 }

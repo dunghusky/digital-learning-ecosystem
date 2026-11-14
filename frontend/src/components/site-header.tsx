@@ -19,15 +19,18 @@ export function SiteHeader() {
           </span>
           <span className="hidden sm:inline">{t("site.name")}</span>
         </Link>
-        <nav className="flex items-center gap-1 text-sm font-medium text-ink-muted sm:gap-4">
-          <Link href="/villages" className="rounded-full px-3 py-2 hover:text-ink">
+        <nav className="flex min-w-0 items-center overflow-x-auto text-sm font-medium whitespace-nowrap text-ink-muted [scrollbar-width:none] sm:gap-4">
+          <Link href="/villages" className="shrink-0 rounded-full px-2 py-2 hover:text-ink sm:px-3">
             {t("nav.villages")}
           </Link>
-          <Link href="/map" className="rounded-full px-3 py-2 hover:text-ink">
+          <Link href="/map" className="shrink-0 rounded-full px-2 py-2 hover:text-ink sm:px-3">
             {t("nav.map")}
           </Link>
-          <Link href="/archive" className="rounded-full px-3 py-2 hover:text-ink">
+          <Link href="/archive" className="shrink-0 rounded-full px-2 py-2 hover:text-ink sm:px-3">
             {t("nav.archive")}
+          </Link>
+          <Link href="/lessons" className="shrink-0 rounded-full px-2 py-2 hover:text-ink sm:px-3">
+            {t("nav.lessons")}
           </Link>
         </nav>
         <div className="flex items-center gap-2">

@@ -1,11 +1,12 @@
 "use client";
 
-import { ChevronDown, LogOut, School, UserRound } from "lucide-react";
+import { ChevronDown, ClipboardList, LogOut, NotebookPen, School, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
 
+import { isStudent, isTeacher } from "@/components/classwork/role-gate";
 import { useAuth } from "@/lib/auth/auth-provider";
 
 /**
@@ -46,7 +47,7 @@ export function AccountMenu() {
     return (
       <Link
         href="/login"
-        className="rounded-full px-3 py-2 text-sm font-semibold text-ink hover:text-primary"
+        className="rounded-full px-3 py-2 text-sm font-semibold whitespace-nowrap text-ink hover:text-primary"
       >
         {t("nav.login")}
       </Link>
@@ -60,6 +61,13 @@ export function AccountMenu() {
   ]
     .filter(Boolean)
     .join(" · ");
+
+  // Students reach their assignments, teachers the classes they teach.
+  const workLink = isStudent(user)
+    ? { href: "/my-work", label: t("classwork.myWork.title"), icon: NotebookPen }
+    : isTeacher(user)
+      ? { href: "/teaching", label: t("classwork.teaching.title"), icon: ClipboardList }
+      : null;
 
   async function onSignOut() {
     setOpen(false);
@@ -101,6 +109,16 @@ export function AccountMenu() {
               </p>
             )}
           </div>
+          {workLink && (
+            <Link
+              href={workLink.href}
+              onClick={() => setOpen(false)}
+              className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-ink hover:bg-surface-muted hover:text-primary-strong"
+            >
+              <workLink.icon className="size-4" aria-hidden />
+              {workLink.label}
+            </Link>
+          )}
           <Link
             href="/account"
             onClick={() => setOpen(false)}

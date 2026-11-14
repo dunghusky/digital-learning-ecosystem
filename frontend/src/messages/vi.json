@@ -11,7 +11,8 @@
     "map": "Bản đồ",
     "archive": "Kho tư liệu",
     "explore": "Khám phá ngay",
-    "login": "Đăng nhập"
+    "login": "Đăng nhập",
+    "lessons": "Bài học"
   },
   "home": {
     "badge": "Số hóa di sản – Đánh thức tình yêu quê hương",
@@ -157,7 +158,8 @@
     "allDocuments": "Xem cả {count} tư liệu",
     "documentsLead": "{count} tư liệu: thơ ca, câu đố, truyện kể gắn với làng nghề.",
     "scrollPrevious": "Xem các tư liệu trước",
-    "scrollNext": "Xem các tư liệu tiếp theo"
+    "scrollNext": "Xem các tư liệu tiếp theo",
+    "lessons": "Bài học về làng nghề này"
   },
   "craftType": {
     "conical_hat": "Nón lá",
@@ -221,7 +223,8 @@
     "relatedVillages": "Làng nghề liên quan",
     "related": "Tư liệu liên quan",
     "previous": "Trang trước",
-    "next": "Trang sau"
+    "next": "Trang sau",
+    "lessons": "Bài học dùng tư liệu này"
   },
   "genre": {
     "folk_verse": "Ca dao",
@@ -345,5 +348,170 @@
     "classLabel": "Lớp {name}",
     "signOut": "Đăng xuất",
     "myAccount": "Tài khoản của tôi"
+  },
+  "lessons": {
+    "eyebrow": "Bài học",
+    "title": "Bài học Tiếng Việt & Ngữ văn",
+    "lead": "Đọc ca dao, câu đố, truyện kể về làng nghề quê mình, rồi viết, sáng tạo và đi tìm hiểu thực tế.",
+    "count": "{count, plural, =0 {Chưa có bài học nào} other {# bài học}}",
+    "subjectLabel": "Môn học",
+    "allSubjects": "Tất cả",
+    "gradeLabel": "Khối lớp",
+    "grade": "Lớp {grade}",
+    "subject": {
+      "vietnamese": "Tiếng Việt",
+      "literature": "Ngữ văn"
+    },
+    "taskKind": {
+      "reading": "Đọc hiểu",
+      "writing": "Viết",
+      "creative": "Sáng tạo",
+      "fieldwork": "Đi thực tế"
+    },
+    "reset": "Xóa lọc",
+    "empty": "Chưa có bài học phù hợp",
+    "emptyHint": "Thử chọn môn hoặc khối lớp khác.",
+    "previous": "Trang trước",
+    "next": "Trang sau",
+    "open": "Vào bài học",
+    "documentCount": "{count, plural, =0 {Chưa có tư liệu} other {# tư liệu}}",
+    "taskCount": "{count, plural, =0 {Chưa có nhiệm vụ} other {# nhiệm vụ}}",
+    "author": "Giáo viên soạn: {name}",
+    "objectives": "Mục tiêu bài học",
+    "introduction": "Khởi động",
+    "readings": "Đọc tư liệu",
+    "readingNumber": "Văn bản {number}",
+    "tasks": "Nhiệm vụ của em",
+    "expectedOutput": "Sản phẩm cần có",
+    "work": {
+      "loading": "Đang chuẩn bị bài làm...",
+      "placeholder": "Em viết câu trả lời ở đây...",
+      "hint": "Gợi ý",
+      "autosave": "Bài làm được lưu tự động khi em gõ.",
+      "saving": "Đang lưu...",
+      "saved": "Đã lưu nháp",
+      "savedLocally": "Đã lưu trên máy này",
+      "saveFailed": "Chưa lưu được. Em gõ tiếp, hệ thống sẽ thử lại.",
+      "submit": "Nộp bài",
+      "confirm": "Nộp rồi thì không sửa được nữa. Em nộp nhé?",
+      "confirmSubmit": "Nộp bài",
+      "cancel": "Xem lại",
+      "emptyWork": "Em hãy trả lời ít nhất một nhiệm vụ trước khi nộp.",
+      "submitFailed": "Chưa nộp được bài. Em kiểm tra mạng rồi thử lại nhé.",
+      "teacher": "thầy cô",
+      "assignedBy": "Bài được {teacher} giao cho lớp em",
+      "due": "Hạn nộp: {date}",
+      "overdue": "Đã quá hạn nộp ({date}), em vẫn nộp được nhưng sẽ ghi là nộp muộn.",
+      "handedIn": "Em đã nộp bài lúc {date}",
+      "late": "Nộp muộn",
+      "waitingFeedback": "Thầy cô sẽ nhận xét sớm. Em quay lại xem nhé!",
+      "feedbackFrom": "Nhận xét của {teacher}",
+      "score": "{score}/10",
+      "login": "Đăng nhập",
+      "local": {
+        "guest": "Em có thể làm thử ngay; bài làm được lưu trên máy này. Đăng nhập để nộp bài cho thầy cô.",
+        "notAssigned": "Bài này chưa được giao cho lớp em. Em vẫn luyện tập được, bài làm lưu trên máy này.",
+        "notStudent": "Bạn đang xem bài với tài khoản giáo viên. Học sinh sẽ làm và nộp bài ở đây."
+      }
+    }
+  },
+  "classwork": {
+    "denied": "Trang này không dành cho tài khoản của bạn",
+    "toLessons": "Xem các bài học",
+    "status": {
+      "late": "Nộp muộn",
+      "student": {
+        "notStarted": "Chưa làm",
+        "draft": "Đang làm",
+        "submitted": "Chờ nhận xét",
+        "reviewed": "Đã có nhận xét"
+      },
+      "teacher": {
+        "notStarted": "Chưa bắt đầu",
+        "draft": "Đang làm",
+        "submitted": "Cần nhận xét",
+        "reviewed": "Đã nhận xét"
+      }
+    },
+    "myWork": {
+      "title": "Bài của em",
+      "lead": "Bài thầy cô giao cho lớp {className} – {school}.",
+      "onlyStudents": "Chỉ tài khoản học sinh mới có bài được giao.",
+      "failed": "Chưa tải được bài của em",
+      "retry": "Thử lại",
+      "empty": "Lớp em chưa được giao bài nào",
+      "emptyHint": "Trong lúc chờ, em có thể vào kho bài học để luyện tập nhé.",
+      "browse": "Xem các bài học",
+      "groups": {
+        "todo": "Cần làm",
+        "waiting": "Đã nộp, chờ thầy cô",
+        "reviewed": "Đã có nhận xét"
+      },
+      "from": "Giao bởi {teacher}",
+      "teacher": "thầy cô",
+      "due": "Hạn nộp: {date}",
+      "action": {
+        "notStarted": "Bắt đầu làm",
+        "draft": "Làm tiếp",
+        "submitted": "Xem bài đã nộp",
+        "reviewed": "Xem nhận xét"
+      }
+    },
+    "teaching": {
+      "title": "Khu giáo viên",
+      "lead": "Giao bài cho lớp, theo dõi bài nộp và nhận xét cho học sinh.",
+      "onlyTeachers": "Chỉ giáo viên mới giao bài và chấm bài được. Nếu bạn là giáo viên, nhờ quản trị đổi vai trò tài khoản.",
+      "assignTitle": "Giao bài mới",
+      "lesson": "Bài học",
+      "pickLesson": "Chọn bài học...",
+      "loadingLessons": "Đang tải danh sách bài...",
+      "lessonOption": "{title} (lớp {grade})",
+      "school": "Trường",
+      "class": "Lớp",
+      "dueAt": "Hạn nộp",
+      "dueHint": "Không bắt buộc. Nộp sau hạn vẫn được, nhưng sẽ ghi là nộp muộn.",
+      "note": "Lời dặn học sinh",
+      "notePlaceholder": "Ví dụ: Các em hỏi ông bà trước khi làm nhiệm vụ 3.",
+      "assign": "Giao bài",
+      "created": "Đã giao “{lesson}” cho lớp {className}.",
+      "errors": {
+        "lesson": "Vui lòng chọn bài học",
+        "school": "Vui lòng điền tên trường",
+        "class": "Vui lòng điền lớp",
+        "duplicate": "Lớp này đã được giao bài học này rồi",
+        "failed": "Chưa giao được bài. Vui lòng thử lại."
+      },
+      "listTitle": "Bài đã giao",
+      "failed": "Chưa tải được danh sách bài đã giao",
+      "retry": "Thử lại",
+      "empty": "Bạn chưa giao bài nào",
+      "emptyHint": "Chọn một bài học ở trên và giao cho lớp của bạn.",
+      "classOf": "Lớp {className} – {school}",
+      "due": "Hạn: {date}",
+      "viewWork": "{count, plural, =0 {Xem lớp} other {Xem # bài nộp}}",
+      "delete": "Xóa bài đã giao",
+      "confirmDelete": "Xóa bài “{lesson}” đã giao? Bài làm của học sinh cho lần giao này cũng bị xóa."
+    },
+    "classWork": {
+      "title": "Bài nộp của lớp",
+      "back": "Khu giáo viên",
+      "missing": "Không tìm thấy bài đã giao này",
+      "classOf": "Lớp {className} – {school}",
+      "due": "Hạn nộp: {date}",
+      "progress": "{handedIn}/{total} học sinh đã nộp bài",
+      "noStudents": "Chưa có học sinh nào trong lớp này",
+      "noStudentsHint": "Học sinh cần đăng ký đúng tên trường và lớp như khi bạn giao bài.",
+      "handedInAt": "nộp lúc {date}",
+      "noAnswer": "(Bỏ trống)",
+      "feedbackTitle": "Nhận xét của thầy cô",
+      "comment": "Nhận xét",
+      "commentPlaceholder": "Em viết rất có cảm xúc, ...",
+      "commentRequired": "Vui lòng viết nhận xét",
+      "score": "Điểm",
+      "outOfTen": "trên 10, có thể bỏ trống",
+      "scoreInvalid": "Điểm phải từ 0 đến 10, ví dụ 8 hoặc 8,5",
+      "sendFeedback": "Gửi nhận xét",
+      "updateFeedback": "Cập nhật nhận xét"
+    }
   }
 }

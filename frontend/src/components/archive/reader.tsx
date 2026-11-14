@@ -10,6 +10,11 @@ import { GENRE_META } from "@/lib/genre-meta";
 
 import { GlossaryPopover } from "./glossary-popover";
 
+/** What the reader needs; documents read inside a lesson come without the archive extras. */
+export type ReaderDocument = Pick<DocumentDetail, "genre" | "body" | "glossary" | "answer"> & {
+  grade_level?: DocumentDetail["grade_level"];
+};
+
 /** Text sizes in rem; the reader steps through them with A-/A+. */
 const SCALES = [1, 1.125, 1.25, 1.375, 1.5] as const;
 const STORAGE_KEY = "archive:font-scale";
@@ -49,7 +54,7 @@ function storeScale(index: number) {
  * The document text with its glossary marked inline and a remembered text size.
  * Primary-school texts start one step larger; once a reader picks a size it applies everywhere.
  */
-export function Reader({ document }: { document: DocumentDetail }) {
+export function Reader({ document }: { document: ReaderDocument }) {
   const t = useTranslations("archive");
   const defaultIndex = document.grade_level === "primary" ? 2 : 1;
   const [sessionIndex, setSessionIndex] = useState<number | null>(null);
