@@ -16,6 +16,7 @@ import { GenreLabel } from "@/components/archive/document-parts";
 import { Reader } from "@/components/archive/reader";
 import { SubjectBadge } from "@/components/lessons/lesson-parts";
 import { LessonWorkspace } from "@/components/lessons/lesson-workspace";
+import { RelatedQuizzes } from "@/components/quizzes/related-quizzes";
 import { CRAFT_META } from "@/lib/craft-meta";
 import { fetchLesson, type LessonReading } from "@/lib/api/lessons";
 import { SUBJECT_META } from "@/lib/lesson-meta";
@@ -149,6 +150,8 @@ export default async function LessonPage({ params }: { params: Params }) {
           </div>
         </section>
       )}
+
+      <RelatedQuizzes quizzes={lesson.quizzes} title={t("quizzes")} />
     </main>
   );
 }

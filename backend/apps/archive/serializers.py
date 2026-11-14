@@ -1,6 +1,7 @@
+from django.apps import apps
 from rest_framework import serializers
 
-from apps.core.serializers import RelatedLessonsMixin
+from apps.core.serializers import RelatedLessonsMixin, RelatedQuizzesMixin
 from apps.villages.models import CraftVillage
 
 from .models import Document, GlossaryTerm, Theme
@@ -70,7 +71,7 @@ class DocumentListSerializer(serializers.ModelSerializer):
         return [line for line in lines if line][:EXCERPT_LINES]
 
 
-class DocumentDetailSerializer(RelatedLessonsMixin, DocumentListSerializer):
+class DocumentDetailSerializer(RelatedLessonsMixin, RelatedQuizzesMixin, DocumentListSerializer):
     villages = LocatedVillageRefSerializer(many=True, read_only=True)
     glossary = GlossaryTermSerializer(many=True, read_only=True)
     reading_questions = serializers.SerializerMethodField()
@@ -91,7 +92,12 @@ class DocumentDetailSerializer(RelatedLessonsMixin, DocumentListSerializer):
             "updated_at",
             "related",
             "lessons",
+            "quizzes",
         ]
+
+    def related_quizzes(self, document: Document):
+        # Quizzes are a later app built on the archive, so look the model up by name.
+        return apps.get_model("quizzes", "Quiz").objects.filter(questions__document=document)
 
     def get_reading_questions(self, document: Document) -> list[str]:
         return [line.strip() for line in document.reading_questions.splitlines() if line.strip()]

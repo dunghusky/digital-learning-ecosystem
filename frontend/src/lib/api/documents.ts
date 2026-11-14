@@ -1,6 +1,7 @@
 import { ApiError, apiFetch, type Paginated } from "./client";
 import type { LessonRef } from "./lessons";
 import type { VillageSummary } from "./villages";
+import type { QuizRef } from "./quizzes";
 
 export type Genre =
   | "folk_verse"
@@ -67,6 +68,7 @@ export interface DocumentDetail extends DocumentSummary {
   related: DocumentSummary[];
   /** Published lessons that read this document. */
   lessons: LessonRef[];
+  quizzes: QuizRef[];
 }
 
 export interface GenreCount {

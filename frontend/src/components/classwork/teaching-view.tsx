@@ -16,6 +16,7 @@ import { type FormEvent, useCallback, useEffect, useState } from "react";
 
 import { Field, focusFirstInvalid } from "@/components/auth/form-field";
 import { SubjectBadge } from "@/components/lessons/lesson-parts";
+import { ClassQuizResultsPanel } from "@/components/quizzes/class-quiz-results";
 import { buttonClass } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -115,6 +116,8 @@ function Teaching({ user }: { user: CurrentUser }) {
           )}
         </div>
       </section>
+
+      <ClassQuizResultsPanel defaultSchool={user.school_name} />
     </div>
   );
 }

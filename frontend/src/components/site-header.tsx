@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import { AccountMenu } from "@/components/auth/account-menu";
+import { SiteNav } from "@/components/site-nav";
 import { ButtonLink } from "@/components/ui/button";
 
 export function SiteHeader() {
@@ -19,20 +20,7 @@ export function SiteHeader() {
           </span>
           <span className="hidden sm:inline">{t("site.name")}</span>
         </Link>
-        <nav className="flex min-w-0 items-center overflow-x-auto text-sm font-medium whitespace-nowrap text-ink-muted [scrollbar-width:none] sm:gap-4">
-          <Link href="/villages" className="shrink-0 rounded-full px-2 py-2 hover:text-ink sm:px-3">
-            {t("nav.villages")}
-          </Link>
-          <Link href="/map" className="shrink-0 rounded-full px-2 py-2 hover:text-ink sm:px-3">
-            {t("nav.map")}
-          </Link>
-          <Link href="/archive" className="shrink-0 rounded-full px-2 py-2 hover:text-ink sm:px-3">
-            {t("nav.archive")}
-          </Link>
-          <Link href="/lessons" className="shrink-0 rounded-full px-2 py-2 hover:text-ink sm:px-3">
-            {t("nav.lessons")}
-          </Link>
-        </nav>
+        <SiteNav />
         <div className="flex items-center gap-2">
           <AccountMenu />
           {/* Hidden on a wrapper: "hidden" on the link itself loses to buttonClass's inline-flex. */}

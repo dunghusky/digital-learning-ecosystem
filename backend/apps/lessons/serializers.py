@@ -6,6 +6,7 @@ from apps.archive.serializers import (
     ThemeSerializer,
     VillageRefSerializer,
 )
+from apps.core.serializers import RelatedQuizzesMixin
 
 from .models import Lesson, LessonDocument, LessonTask
 
@@ -68,7 +69,7 @@ class LessonTaskSerializer(serializers.ModelSerializer):
         fields = ["id", "order", "kind", "prompt", "hint"]
 
 
-class LessonDetailSerializer(LessonListSerializer):
+class LessonDetailSerializer(RelatedQuizzesMixin, LessonListSerializer):
     author_name = serializers.SerializerMethodField()
     readings = LessonDocumentSerializer(source="lesson_documents", many=True, read_only=True)
     tasks = LessonTaskSerializer(many=True, read_only=True)
@@ -81,6 +82,7 @@ class LessonDetailSerializer(LessonListSerializer):
             "author_name",
             "readings",
             "tasks",
+            "quizzes",
             "published_at",
             "updated_at",
         ]

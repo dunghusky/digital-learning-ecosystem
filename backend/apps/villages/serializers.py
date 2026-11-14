@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.core.serializers import RelatedLessonsMixin
+from apps.core.serializers import RelatedLessonsMixin, RelatedQuizzesMixin
 
 from .models import CraftVillage
 
@@ -23,7 +23,9 @@ class CraftVillageListSerializer(serializers.ModelSerializer):
         ]
 
 
-class CraftVillageDetailSerializer(RelatedLessonsMixin, serializers.ModelSerializer):
+class CraftVillageDetailSerializer(
+    RelatedLessonsMixin, RelatedQuizzesMixin, serializers.ModelSerializer
+):
     class Meta:
         model = CraftVillage
         fields = [
@@ -50,6 +52,7 @@ class CraftVillageDetailSerializer(RelatedLessonsMixin, serializers.ModelSeriali
             "contact",
             "sources",
             "lessons",
+            "quizzes",
             "published_at",
             "updated_at",
         ]

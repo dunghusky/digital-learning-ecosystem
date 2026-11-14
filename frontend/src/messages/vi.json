@@ -12,7 +12,8 @@
     "archive": "Kho tư liệu",
     "explore": "Khám phá ngay",
     "login": "Đăng nhập",
-    "lessons": "Bài học"
+    "lessons": "Bài học",
+    "quizzes": "Đố vui"
   },
   "home": {
     "badge": "Số hóa di sản – Đánh thức tình yêu quê hương",
@@ -413,7 +414,8 @@
         "notAssigned": "Bài này chưa được giao cho lớp em. Em vẫn luyện tập được, bài làm lưu trên máy này.",
         "notStudent": "Bạn đang xem bài với tài khoản giáo viên. Học sinh sẽ làm và nộp bài ở đây."
       }
-    }
+    },
+    "quizzes": "Ôn tập bằng đố vui"
   },
   "classwork": {
     "denied": "Trang này không dành cho tài khoản của bạn",
@@ -512,6 +514,106 @@
       "scoreInvalid": "Điểm phải từ 0 đến 10, ví dụ 8 hoặc 8,5",
       "sendFeedback": "Gửi nhận xét",
       "updateFeedback": "Cập nhật nhận xét"
+    }
+  },
+  "quizzes": {
+    "eyebrow": "Đố vui",
+    "title": "Đố vui làng nghề",
+    "lead": "Trắc nghiệm, điền ca dao, giải câu đố và ghép làng với nghề. Làm xong biết điểm ngay!",
+    "count": "{count, plural, =0 {Chưa có bộ đố nào} other {# bộ đố}}",
+    "gradeLabel": "Cấp học",
+    "allGrades": "Tất cả",
+    "reset": "Xóa lọc",
+    "empty": "Chưa có bộ đố phù hợp",
+    "emptyHint": "Thử chọn cấp học khác nhé.",
+    "previous": "Trang trước",
+    "next": "Trang sau",
+    "open": "Chơi ngay",
+    "questionCount": "{count, plural, =0 {Chưa có câu hỏi} other {# câu hỏi}}",
+    "minutes": "{count} phút",
+    "noTimeLimit": "Không giới hạn thời gian",
+    "fromLesson": "Thuộc bài học: {title}",
+    "kind": {
+      "single_choice": "Trắc nghiệm",
+      "image_choice": "Đoán qua hình",
+      "fill_blank": "Điền vào chỗ trống",
+      "riddle": "Câu đố",
+      "matching": "Ghép cặp"
+    },
+    "play": {
+      "start": "Bắt đầu",
+      "intro": "{count, plural, other {Có # câu hỏi}}. Em đọc kỹ đề rồi chọn hoặc gõ câu trả lời nhé.",
+      "guestNote": "Em chưa đăng nhập nên điểm sẽ không được lưu.",
+      "studentNote": "Điểm của em sẽ được lưu vào tài khoản.",
+      "signIn": "Đăng nhập để lưu điểm",
+      "progress": "Câu {current} / {total}",
+      "points": "{count, plural, other {# điểm}}",
+      "back": "Câu trước",
+      "next": "Câu tiếp",
+      "finish": "Nộp bài",
+      "submitting": "Đang chấm bài...",
+      "typePlaceholder": "Em gõ câu trả lời ở đây",
+      "blankLabel": "Từ còn thiếu",
+      "matchHint": "Với mỗi mục in đậm, em bấm chọn một đáp án ở ngay bên dưới.",
+      "matchPick": "Chọn mục ghép với “{left}”",
+      "unanswered": "{count, plural, other {Còn # câu em chưa trả lời.}} Em vẫn muốn nộp chứ?",
+      "confirmFinish": "Nộp luôn",
+      "keepGoing": "Làm tiếp",
+      "timeLeft": "Còn {time}",
+      "timeUp": "Hết giờ! Bài của em đã được nộp.",
+      "submitFailed": "Chưa nộp được bài. Em kiểm tra mạng rồi thử lại nhé.",
+      "retry": "Thử lại",
+      "jumpTo": "Đến câu {number}",
+      "teacherNote": "Thầy cô đang làm thử nên điểm sẽ không được lưu."
+    },
+    "result": {
+      "title": "Kết quả của em",
+      "score": "{score} / {max} điểm",
+      "great": "Tuyệt vời! Em hiểu rất rõ về làng nghề quê mình.",
+      "good": "Khá lắm! Xem lại vài câu sai là em sẽ giỏi hơn.",
+      "tryAgain": "Cố lên! Em xem đáp án rồi thử lại nhé.",
+      "saved": "Điểm đã được lưu vào tài khoản của em.",
+      "notSaved": "Điểm chỉ được lưu khi học sinh đã đăng nhập.",
+      "review": "Xem lại từng câu",
+      "correct": "Đúng",
+      "wrong": "Chưa đúng",
+      "yourAnswer": "Em trả lời: {answer}",
+      "noAnswer": "Em chưa trả lời câu này",
+      "rightAnswer": "Đáp án: {answer}",
+      "explanation": "Giải thích",
+      "playAgain": "Làm lại",
+      "moreQuizzes": "Bộ đố khác",
+      "pastAttempts": "Các lần em đã làm",
+      "attemptLine": "{date}: {score}/{max} điểm"
+    },
+    "related": "Đố vui liên quan",
+    "mine": {
+      "title": "Điểm đố vui của em",
+      "best": "Điểm cao nhất",
+      "attempts": "{count, plural, other {đã làm # lần}}",
+      "latest": "Lần gần nhất: {score}/{max} · {date}",
+      "again": "Làm lại"
+    },
+    "teaching": {
+      "title": "Kết quả đố vui của lớp",
+      "lead": "Chọn bộ đố và lớp để xem điểm từng em và những câu cả lớp hay sai.",
+      "quiz": "Bộ đố",
+      "pickQuiz": "Chọn bộ đố",
+      "loading": "Đang tải bộ đố...",
+      "school": "Trường",
+      "class": "Lớp",
+      "show": "Xem kết quả",
+      "failed": "Chưa tải được kết quả. Thầy cô thử lại nhé.",
+      "noStudents": "Chưa có học sinh nào đăng ký với trường và lớp này.",
+      "studentsTitle": "Học sinh ({took}/{total} em đã làm)",
+      "student": "Học sinh",
+      "best": "Cao nhất",
+      "last": "Lần gần nhất",
+      "attempts": "Số lần",
+      "notYet": "Chưa làm",
+      "questionsTitle": "Từng câu hỏi",
+      "questionsHint": "Tính theo lần làm gần nhất của mỗi em. Câu tô cam là câu chưa đến nửa lớp làm đúng.",
+      "correctOf": "{correct}/{total} em đúng"
     }
   }
 }

@@ -1,5 +1,6 @@
 import { ApiError, apiFetch, type Paginated } from "./client";
 import type { DocumentDetail, Theme, VillageRef } from "./documents";
+import type { QuizRef } from "./quizzes";
 
 export type Subject = "vietnamese" | "literature";
 
@@ -47,6 +48,7 @@ export interface LessonDetail extends LessonSummary {
   author_name: string;
   readings: LessonReading[];
   tasks: LessonTask[];
+  quizzes: QuizRef[];
   published_at: string | null;
   updated_at: string;
 }
