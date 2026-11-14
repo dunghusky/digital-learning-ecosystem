@@ -253,3 +253,6 @@ runbook/
 map-leaflet.md
 frontend/AGENTS.md
 frontend/CLAUDE.md
+
+# Database dumps
+*.dump
